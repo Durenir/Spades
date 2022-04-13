@@ -1,4 +1,4 @@
-package Project;
+package ProjectScratch;
 
 public enum Suit {
 	HEART("Hearts"), SPADE("Spades"), CLUB("Clubs"), DIAMOND("Diamond");

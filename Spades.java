@@ -1,4 +1,4 @@
-package Project;
+package ProjectScratch;
 
 import java.util.Deque;
 import java.util.LinkedList;
@@ -6,23 +6,23 @@ import java.util.LinkedList;
 public class Spades {
 
 	public static void main(String[] args) {
-		Computer computer1 = new Computer("Computer 1");
-		Computer computer2 = new Computer("Computer 2");
-		Computer computer3 = new Computer("Computer 3");
-		Player player = new Player("Player");
-		Deck deck = new Deck();
-		boolean spadesBroken = false;
-		deck.shuffle();
-		computer1.setPartner(computer3);
-		computer3.setPartner(computer1);
-		player.setPartner(computer2);
-		computer2.setPartner(player);
+//		Computer computer1 = new Computer("Computer 1");
+//		Computer computer2 = new Computer("Computer 2");
+//		Computer computer3 = new Computer("Computer 3");
+//		Player player = new Player("Player");
+//		Deck deck = new Deck();
+//		boolean spadesBroken = false;
+//		deck.shuffle();
+//		computer1.setPartner(computer3);
+//		computer3.setPartner(computer1);
+//		player.setPartner(computer2);
+//		computer2.setPartner(player);
 
-		Deque<Player> players = new LinkedList<Player>();
-		players.add(player);
-		players.add(computer1);
-		players.add(computer2);
-		players.add(computer3);
+//		Deque<Player> players = new LinkedList<Player>();
+//		players.add(player);
+//		players.add(computer1);
+//		players.add(computer2);
+//		players.add(computer3);
 		while(!deck.isEmpty()) {
 			for(Player p : players) {
 				p.addCard(deck.drawCard());

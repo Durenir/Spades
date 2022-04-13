@@ -1,4 +1,10 @@
-package Project;
+package ProjectScratch;
+
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class Card {
 
@@ -6,8 +12,17 @@ public class Card {
 	private Face face;
 	private int value;
 	private Player owner;
+	private BufferedImage image;
+	private int[] position;
+	private int[] destination;
+	private int[] rotation;
+	private boolean faceUp;
+	private int animSpeed = 10;
+	private static final int width = 75;
+	private static final int height = 109;
 
-	public Card(Suit suit, Face face) {
+
+	public Card(Suit suit, Face face, String fileName) {
 		this.suit = suit;
 		this.face = face;
 		if(face == Face.ACE) {
@@ -18,6 +33,51 @@ public class Card {
 		if(suit == Suit.SPADE) {
 			value += 13;
 		}
+		position = new int[2];
+		destination = new int[2];
+		rotation = new int[2];
+		try {
+			image = ImageIO.read(getClass().getResource("Cards/" + fileName));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void update() {
+		//update positions
+		if(position[0] < destination[0]) {
+			//move along x axis by given speed. position[0]++;
+			position[0] += animSpeed;
+			if(position[0] > destination[0]) {
+				position[0] = destination[0];
+			}
+		}
+		if(position[0] > destination[0]) {
+			//move along x axis by given speed. position[0]--;
+			position[0] -= animSpeed;
+			if(position[0] < destination[0]) {
+				position[0] = destination[0];
+			}
+		}
+		if(position[1] < destination[1]) {
+			//move along y axis by given speed. position[1]++;
+			position[1] += animSpeed;
+			if(position[1] > destination[1]) {
+				position[1] = destination[1];
+			}
+		}
+		if(position[1] > destination[1]) {
+			//move along y axis by given speed. position[1]--;
+			position[1] -= animSpeed;
+			if(position[1] < destination[1]) {
+				position[1] = destination[1];
+			}
+		}
+	}
+
+	public void draw(Graphics2D g2) {
+		//Image, x position, y position, width, height,
+		g2.drawImage(image, position[0], position[1], getWidth(), getHeight(), null);
 	}
 
 	public Suit getSuit() {
@@ -50,6 +110,67 @@ public class Card {
 
 	public void setOwner(Player owner) {
 		this.owner = owner;
+	}
+
+	public BufferedImage getImage() {
+		return image;
+	}
+
+	public void setImage(BufferedImage image) {
+		this.image = image;
+	}
+
+	public int[] getPosition() {
+		return position;
+	}
+
+	public void setPosition(int[] postion) {
+		this.position = postion;
+	}
+
+	public int[] getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(int[] rotation) {
+		this.rotation = rotation;
+	}
+
+	public int[] getDestination() {
+		return destination;
+	}
+
+	public void setDestination(int[] destination) {
+		this.destination = destination;
+	}
+	
+	public void setDestination(int x, int y) {
+		this.destination[0] = x;
+		this.destination[1] = y;
+	}
+
+	public boolean isFaceUp() {
+		return faceUp;
+	}
+
+	public void setFaceUp(boolean faceUp) {
+		this.faceUp = faceUp;
+	}
+
+	public int getAnimSpeed() {
+		return animSpeed;
+	}
+
+	public void setAnimSpeed(int animSpeed) {
+		this.animSpeed = animSpeed;
+	}
+
+	public static int getWidth() {
+		return width;
+	}
+
+	public static int getHeight() {
+		return height;
 	}
 
 	public String toString() {

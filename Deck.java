@@ -1,5 +1,6 @@
-package Project;
+package ProjectScratch;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -9,10 +10,24 @@ public class Deck {
 	private static final int NUM_CARDS_OF_SUIT = 13;
 
 	public Deck() {
+		int cardCounter = 0;
 		for(int i = 0; i < Suit.values().length; i++) {
 			for(int j = 0; j < NUM_CARDS_OF_SUIT; j++) {
-				deck.add(new Card(Suit.getSuit(i), Face.getFace(j)));
+				deck.add(new Card(Suit.getSuit(i), Face.getFace(j), "Image" + cardCounter + ".png"));
+				cardCounter++;
 			}
+		}
+	}
+
+	public void update() {
+		for(Card card : deck) {
+			card.update();
+		}
+	}
+
+	public void draw(Graphics2D g2) {
+		for(Card card : deck) {
+			card.draw(g2);
 		}
 	}
 

@@ -1,5 +1,6 @@
-package Project;
+package ProjectScratch;
 
+import java.awt.Graphics2D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
@@ -8,6 +9,24 @@ public class Computer extends Player {
 
 	public Computer(String name) {
 		super(name);
+	}
+
+	public void update() {
+		if(getSelectedCard() != null) {
+			getSelectedCard().update();
+		}
+		for(Card card : getHand()) {
+			card.update();
+		}
+	}
+
+	public void draw(Graphics2D g2) {
+		if(getSelectedCard() != null) {
+			getSelectedCard().draw(g2);
+		}
+		for(Card card : getHand()) {
+			card.draw(g2);
+		}
 	}
 
 	public Card playCard(Card card, Suit suit, boolean spadesBroken) {
@@ -180,6 +199,8 @@ public class Computer extends Player {
 				}
 			}
 		}
+		setSelectedCard(playedCard);
+		getSelectedCard().setDestination(getPlayZone());
 		getHand().remove(playedCard);
 		return playedCard;
 	}

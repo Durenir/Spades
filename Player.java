@@ -1,5 +1,6 @@
-package Project;
+package ProjectScratch;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -15,16 +16,43 @@ public class Player {
 	private int totalPoints;
 	private Player partner;
 	private String name;
+	private int[] playZone;
+	private int[] handZone;
+	private Card selectedCard;
+	private int playZoneWidth;
+	private int handZoneCardOffset;
 
 	private ArrayList<Card> hand;
 
 	public Player(String name) {
 		this.name = name;
 		hand = new ArrayList<Card>();
+		playZone = new int[2];
+		handZone = new int[2];
+
+	}
+
+	public void update() {
+		if(selectedCard != null) {
+			selectedCard.update();
+		}
+		for(Card card : getHand()) {
+			card.update();
+		}
+	}
+
+	public void draw(Graphics2D g2) {
+		if(selectedCard != null) {
+			selectedCard.draw(g2);
+		}
+		for(Card card : getHand()) {
+			card.draw(g2);
+		}
 	}
 
 	public void addCard(Card card) {
 		card.setOwner(this);
+		card.setDestination(this.getHandZoneX(), this.getHandZoneY());
 		hand.add(card);
 	}
 
@@ -68,6 +96,8 @@ public class Player {
 				}
 			}
 		} while (!valid);
+		selectedCard = playerCard;
+		selectedCard.setDestination(playZone);
 		hand.remove(playerCard);
 		return playerCard;
 	}
@@ -200,8 +230,75 @@ public class Player {
 		return totalTricks;
 	}
 
+	public float getPlayZoneX() {
+		return playZone[0];
+	}
+
+	public float getPlayZoneY() {
+		return playZone[1];
+	}
+
+	public void setPlayZoneX(int playZoneX) {
+		this.playZone[0] = playZoneX;
+	}
+
+	public void setPlayZoneY(int playZoneY) {
+		this.playZone[1] = playZoneY;
+	}
+
+	public int[] getPlayZone() {
+		return playZone;
+	}
+
+	public void setPlayZone(int x, int y) {
+		this.playZone[0] = x;
+		this.playZone[1] = y;
+	}
+
 	public void setTotalTricks(int totalTricks) {
 		this.totalTricks = totalTricks;
 	}
 
+	public Card getSelectedCard() {
+		return selectedCard;
+	}
+
+	public void setSelectedCard(Card selectedCard) {
+		this.selectedCard = selectedCard;
+	}
+
+	public void setPlayZone(int[] playZone) {
+		this.playZone = playZone;
+	}
+
+	public int getHandZoneX() {
+		return handZone[0];
+	}
+
+	public int getHandZoneY() {
+		return handZone[1];
+	}
+
+	public void setHandZoneX(int handZoneX) {
+		this.handZone[0] = handZoneX;
+	}
+
+	public void setHandZoneY(int handZoneY) {
+		this.handZone[1] = handZoneY;
+	}
+
+	public int[] getHandZone() {
+		return playZone;
+	}
+
+	public void setHandZone(int x, int y, int width) {
+		this.handZone[0] = x;
+		this.handZone[1] = y;
+		this.playZoneWidth = width;
+	}
+
+	public void setHandZone(int[] handZone, int width) {
+		this.handZone = handZone;
+		this.playZoneWidth = width;
+	}
 }
