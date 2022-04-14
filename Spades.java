@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 import java.util.Deque;
 import java.util.LinkedList;

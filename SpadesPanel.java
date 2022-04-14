@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -19,7 +19,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 
 	public SpadesPanel() {
-		this.setPreferredSize(new Dimension(750, 750));
+		this.setPreferredSize(new Dimension(1000, 1000));
 		this.setBackground(new Color(71, 113, 72));
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
@@ -49,16 +49,16 @@ public class SpadesPanel extends JPanel implements Runnable{
 		int handZone1Y = this.getHeight() - Card.getHeight();
 		int handZone1Width = this.getWidth();
 		//Zone 2
-		int handZone2X = Card.getHeight();
+		int handZone2X = 0;
 		int handZone2Y = 0;
 		int handZone2Width = this.getHeight();
 		//Zone 3
-		int handZone3X = this.getWidth();
-		int handZone3Y = Card.getHeight();
+		int handZone3X = this.getWidth() - Card.getWidth();
+		int handZone3Y = 0;
 		int handZone3Width = this.getWidth();
 		//Zone 4
-		int handZone4X = this.getWidth() - Card.getHeight();
-		int handZone4Y = this.getHeight();
+		int handZone4X = this.getWidth() - Card.getWidth();
+		int handZone4Y = this.getHeight() - Card.getHeight();
 		int handZone4Width = this.getHeight();
 
 		//Initialize players
@@ -78,10 +78,23 @@ public class SpadesPanel extends JPanel implements Runnable{
 		computer2.setPlayZone(zone3X, zone3Y);
 		computer3.setPlayZone(zone4X, zone4Y);
 
-		player.setHandZone(handZone1X, handZone1Y, handZone1Width);
-		computer1.setHandZone(handZone2X, handZone2Y, handZone2Width);
-		computer2.setHandZone(handZone3X, handZone3Y, handZone3Width);
-		computer3.setHandZone(handZone4X, handZone4Y, handZone4Width);
+		int[] handZone1Offset = {(this.getWidth() - (13 * Card.getWidth() / 2)) / 2, 0};
+		int[] handZone2Offset = {0, (this.getHeight() - (13 * Card.getWidth() / 2)) / 2};
+		int[] handZone3Offset = {-(this.getWidth() - (13 * Card.getWidth() / 2)) / 2, 0};
+		int[] handZone4Offset = {0, -(this.getHeight() - (13 * Card.getWidth() / 2)) / 2};
+
+		int[] handZone1OffsetModifier = {Card.getWidth() / 2, 0};
+		int[] handZone2OffsetModifier = {0, Card.getWidth() / 2};
+		int[] handZone3OffsetModifier = {-(Card.getWidth() / 2), 0};
+		int[] handZone4OffsetModifier = {0, -(Card.getWidth() / 2)};
+
+		player.setHandZone(handZone1X, handZone1Y, handZone1Offset, handZone1OffsetModifier, handZone1Width);
+		computer1.setHandZone(handZone2X, handZone2Y, handZone2Offset, handZone2OffsetModifier, handZone2Width);
+		computer2.setHandZone(handZone3X, handZone3Y, handZone3Offset, handZone3OffsetModifier, handZone3Width);
+		computer3.setHandZone(handZone4X, handZone4Y, handZone4Offset, handZone4OffsetModifier, handZone4Width);
+
+
+
 
 		//Add players to array of players
 		players.clear();
@@ -94,12 +107,19 @@ public class SpadesPanel extends JPanel implements Runnable{
 		while(!deck.isEmpty()) {
 			for(Player p : players) {
 				p.addCard(deck.drawCard());
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		}
 		//Sort hands
 		for(Player p : players) {
 			p.sortHand();
 			System.out.println(p.getHand());
+			p.calcAndApplyOffsets();
 		}
 	}
 
@@ -107,14 +127,14 @@ public class SpadesPanel extends JPanel implements Runnable{
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
-
+	
 	public void playSpades() {
 		initGame();
 		for(int i = 0; i < 13; i++) {
 			Card highest = null;
 			Suit suit = null;
 			for(Player p : players) {
-				Card playedCard = p.playCard(highest, suit, spadesBroken);
+				Card playedCard = p.playCard(highest, suit, spadesBroken, this);
 				if(playedCard.getSuit() == Suit.SPADE && !spadesBroken) {
 					spadesBroken = true;
 				}

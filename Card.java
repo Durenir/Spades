@@ -1,6 +1,7 @@
-package ProjectScratch;
+package Project;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
@@ -20,6 +21,7 @@ public class Card {
 	private int animSpeed = 10;
 	private static final int width = 75;
 	private static final int height = 109;
+	private Rectangle rec;
 
 
 	public Card(Suit suit, Face face, String fileName) {
@@ -127,6 +129,11 @@ public class Card {
 	public void setPosition(int[] postion) {
 		this.position = postion;
 	}
+	
+	public void setPosition(int x, int y) {
+		this.position[0] = x;
+		this.position[1] = y;
+	}
 
 	public int[] getRotation() {
 		return rotation;
@@ -143,7 +150,7 @@ public class Card {
 	public void setDestination(int[] destination) {
 		this.destination = destination;
 	}
-	
+
 	public void setDestination(int x, int y) {
 		this.destination[0] = x;
 		this.destination[1] = y;
@@ -171,6 +178,14 @@ public class Card {
 
 	public static int getHeight() {
 		return height;
+	}
+
+	public Rectangle getRec() {
+		return rec;
+	}
+
+	public void setRec(Rectangle rec) {
+		this.rec = rec;
 	}
 
 	public String toString() {

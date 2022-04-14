@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 public enum Face {
 	ACE("Ace"), TWO("Two"), THREE("Three"), FOUR("Four"),

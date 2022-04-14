@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 import java.awt.Graphics2D;
 import java.security.SecureRandom;
@@ -29,7 +29,7 @@ public class Computer extends Player {
 		}
 	}
 
-	public Card playCard(Card card, Suit suit, boolean spadesBroken) {
+	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {
 		// Take in the top card that's been played and the leading suit.
 		Card playedCard = null;
 		ArrayList<Card> options = new ArrayList<Card>();
@@ -202,6 +202,7 @@ public class Computer extends Player {
 		setSelectedCard(playedCard);
 		getSelectedCard().setDestination(getPlayZone());
 		getHand().remove(playedCard);
+		resetAndRecalcOffset();
 		return playedCard;
 	}
 }

@@ -1,6 +1,9 @@
-package ProjectScratch;
+package Project;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,8 +22,10 @@ public class Player {
 	private int[] playZone;
 	private int[] handZone;
 	private Card selectedCard;
-	private int playZoneWidth;
-	private int handZoneCardOffset;
+	private int handZoneWidth;
+	private int[] handZoneCardOffsetModifier;
+	private int[] handZoneOffset;
+	Card playerCard;
 
 	private ArrayList<Card> hand;
 
@@ -29,77 +34,124 @@ public class Player {
 		hand = new ArrayList<Card>();
 		playZone = new int[2];
 		handZone = new int[2];
-
 	}
 
 	public void update() {
-		if(selectedCard != null) {
+		if (selectedCard != null) {
 			selectedCard.update();
 		}
-		for(Card card : getHand()) {
+		for (Card card : getHand()) {
 			card.update();
 		}
 	}
 
 	public void draw(Graphics2D g2) {
-		if(selectedCard != null) {
+		if (selectedCard != null) {
 			selectedCard.draw(g2);
 		}
-		for(Card card : getHand()) {
+		for (Card card : getHand()) {
 			card.draw(g2);
 		}
 	}
 
 	public void addCard(Card card) {
 		card.setOwner(this);
-		card.setDestination(this.getHandZoneX(), this.getHandZoneY());
+		card.setDestination(getHandZoneX(), getHandZoneY());
 		hand.add(card);
 	}
 
-	public Card playCard(Card card, Suit suit, boolean spadesBroken) {
-		boolean valid;
-		Card playerCard;
-		do {
-			valid = true;
-			System.out.println(getHand());
-			//Note: Range validation not needed because this is a test. Well be using onClickListeners for images in the GUI
-			System.out.print("Pick a card index: ");
-			Scanner in = new Scanner(System.in);
-			playerCard = getHand().get(in.nextInt());
-			if (playerCard.getSuit() == Suit.SPADE) {
-				if (card == null && suit == null && !spadesBroken) {
-					System.out.println("Spades have not been broken yet.");
-					valid = false;
+	public boolean waitForCards() {
+		for (Card card : hand) {
+			if (card.getPosition()[0] != card.getDestination()[0]) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Card playCard(Card card, Suit suit, boolean spadesBroken,
+			SpadesPanel sp) {
+		boolean valid = true;
+		boolean lock = true;
+		playerCard = null;
+		while (lock) {
+			lock = waitForCards();
+		}
+		setRectangles();
+		sp.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				for (Card card : hand) {
+					if (card.getRec().contains(e.getPoint())) {
+						System.out.println(card + " was clicked");
+						playerCard = card;
+						System.out.println(playerCard.toString());
+					}
+				}
+			}
+		});
+		while (true) {
+			if (playerCard != null) {
+				System.out.println("Picked a card");
+				if (playerCard.getSuit() == Suit.SPADE) {
+					if (card == null && suit == null && !spadesBroken) {
+						System.out.println("Spades have not been broken yet.");
+						valid = false;
+						continue;
+					} else {
+						for (Card currentCard : getHand()) {
+							// Played a spade while still having the suit.
+							if (currentCard.getSuit() == suit
+									&& !suit.equals(Suit.SPADE)) {
+								System.out.println("You can not play a "
+										+ playerCard.getSuit()
+										+ " while you have " + suit);
+								valid = false;
+								continue;
+							}
+						}
+					}
 				} else {
 					for (Card currentCard : getHand()) {
 						// Played a spade while still having the suit.
 						if (currentCard.getSuit() == suit
-								&& !suit.equals(Suit.SPADE)) {
+								&& playerCard.getSuit() != suit) {
 							System.out.println("You can not play a "
 									+ playerCard.getSuit() + " while you have "
 									+ suit);
 							valid = false;
-							break;
+							continue;
 						}
 					}
 				}
-			} else {
-				for (Card currentCard : getHand()) {
-					// Played a spade while still having the suit.
-					if (currentCard.getSuit() == suit && playerCard.getSuit() != suit) {
-						System.out.println("You can not play a "
-								+ playerCard.getSuit() + " while you have "
-								+ suit);
-						valid = false;
-						break;
+				if(valid) {
+					selectedCard = playerCard;
+					selectedCard.setDestination(playZone);
+					hand.remove(playerCard);
+					if(hand.size() > 0) {
+						resetAndRecalcOffset();
 					}
+					return playerCard;
+				} else {
+					playerCard = null;
+					valid = true;
 				}
+			} else {
+				Thread.yield();
 			}
-		} while (!valid);
-		selectedCard = playerCard;
-		selectedCard.setDestination(playZone);
-		hand.remove(playerCard);
-		return playerCard;
+		}
+	}
+
+	private void setRectangles() {
+		for (Card card : hand) {
+			if (card != hand.get(hand.size() - 1)) {
+				card.setRec(new Rectangle(card.getPosition()[0], card
+						.getPosition()[1], Card.getWidth() / 2, Card
+						.getHeight()));
+			} else {
+				card.setRec(new Rectangle(card.getPosition()[0], card
+						.getPosition()[1], Card.getWidth(), Card.getHeight()));
+			}
+		}
 	}
 
 	public void sortHand() {
@@ -152,6 +204,34 @@ public class Player {
 		hand.addAll(spades);
 		hand.addAll(diamonds);
 		hand.addAll(clubs);
+	}
+
+	public void calcAndApplyOffsets() {
+		int[] temp = { handZoneOffset[0], handZoneOffset[1] };
+		for (Card card : hand) {
+			int[] firstPoint = { this.handZone[0] + temp[0],
+					this.handZone[1] + temp[1] };
+			card.setDestination(firstPoint);
+			temp[0] += this.handZoneCardOffsetModifier[0];
+			temp[1] += this.handZoneCardOffsetModifier[1];
+		}
+	}
+
+	public void resetAndRecalcOffset() {
+		System.out.println("---------" + handZoneOffset[0] + " "
+				+ handZoneOffset[1] + "----------------");
+		if (handZoneOffset[0] > 0) {
+			handZoneOffset[0] += Card.getWidth() / hand.size();
+		} else if (handZoneOffset[0] < 0) {
+			handZoneOffset[0] -= (Card.getWidth() / hand.size());
+			;
+		} else if (handZoneOffset[1] > 0) {
+			handZoneOffset[1] += Card.getWidth() / hand.size();
+		} else if (handZoneOffset[1] < 0) {
+			handZoneOffset[1] -= (Card.getWidth() / hand.size());
+			;
+		}
+		calcAndApplyOffsets();
 	}
 
 	public int getBid() {
@@ -291,14 +371,30 @@ public class Player {
 		return playZone;
 	}
 
-	public void setHandZone(int x, int y, int width) {
+	public void setHandZone(int x, int y, int[] offset, int xOffsetModifier,
+			int yOffsetModifier, int width) {
 		this.handZone[0] = x;
 		this.handZone[1] = y;
-		this.playZoneWidth = width;
+		this.handZoneCardOffsetModifier[0] = xOffsetModifier;
+		this.handZoneCardOffsetModifier[1] = yOffsetModifier;
+		this.handZoneOffset = offset;
+		this.handZoneWidth = width;
 	}
 
-	public void setHandZone(int[] handZone, int width) {
+	public void setHandZone(int x, int y, int[] offset, int[] offsetModifier,
+			int width) {
+		this.handZone[0] = x;
+		this.handZone[1] = y;
+		this.handZoneCardOffsetModifier = offsetModifier;
+		this.handZoneOffset = offset;
+		this.handZoneWidth = width;
+	}
+
+	public void setHandZone(int[] handZone, int[] offset, int[] offsetModifier,
+			int width) {
 		this.handZone = handZone;
-		this.playZoneWidth = width;
+		this.handZoneCardOffsetModifier = offsetModifier;
+		this.handZoneOffset = offset;
+		this.handZoneWidth = width;
 	}
 }

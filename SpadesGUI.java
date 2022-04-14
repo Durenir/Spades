@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 import javax.swing.JFrame;
 

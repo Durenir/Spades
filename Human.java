@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 import java.awt.Graphics2D;
 
@@ -8,13 +8,19 @@ public class Human extends Player {
 	}
 
 	public void update() {
-		for(Card card : getHand()) {
+		if (getSelectedCard() != null) {
+			getSelectedCard().update();
+		}
+		for (Card card : getHand()) {
 			card.update();
 		}
 	}
 
 	public void draw(Graphics2D g2) {
-		for(Card card : getHand()) {
+		if (getSelectedCard() != null) {
+			getSelectedCard().draw(g2);
+		}
+		for (Card card : getHand()) {
 			card.draw(g2);
 		}
 	}
