@@ -28,6 +28,13 @@ public class Computer extends Player {
 			card.draw(g2);
 		}
 	}
+	
+	public void addCard(Card card) {
+		card.setOwner(this);
+		card.setDestination(getHandZoneX(), getHandZoneY());
+		getHand().add(card);
+		card.setFaceUp(false);
+	}
 
 	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {
 		// Take in the top card that's been played and the leading suit.
@@ -199,6 +206,7 @@ public class Computer extends Player {
 				}
 			}
 		}
+		playedCard.setFaceUp(true);
 		setSelectedCard(playedCard);
 		getSelectedCard().setDestination(getPlayZone());
 		getHand().remove(playedCard);

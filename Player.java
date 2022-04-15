@@ -58,6 +58,7 @@ public class Player {
 		card.setOwner(this);
 		card.setDestination(getHandZoneX(), getHandZoneY());
 		hand.add(card);
+		card.setFaceUp(true);
 	}
 
 	public boolean waitForCards() {

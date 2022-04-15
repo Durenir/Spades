@@ -14,6 +14,7 @@ public class Card {
 	private int value;
 	private Player owner;
 	private BufferedImage image;
+	private BufferedImage backImage;
 	private int[] position;
 	private int[] destination;
 	private int[] rotation;
@@ -40,6 +41,7 @@ public class Card {
 		rotation = new int[2];
 		try {
 			image = ImageIO.read(getClass().getResource("Cards/" + fileName));
+			backImage = ImageIO.read(getClass().getResource("Cards/Image52.png"));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -79,7 +81,11 @@ public class Card {
 
 	public void draw(Graphics2D g2) {
 		//Image, x position, y position, width, height,
-		g2.drawImage(image, position[0], position[1], getWidth(), getHeight(), null);
+		if(faceUp) {
+			g2.drawImage(image, position[0], position[1], getWidth(), getHeight(), null);
+		} else {
+			g2.drawImage(backImage, position[0], position[1], getWidth(), getHeight(), null);
+		}
 	}
 
 	public Suit getSuit() {
