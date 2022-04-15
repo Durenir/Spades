@@ -127,7 +127,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
-	
+
 	public void playSpades() {
 		initGame();
 		for(int i = 0; i < 13; i++) {
