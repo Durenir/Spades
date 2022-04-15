@@ -1,6 +1,4 @@
-Fix playzone positions
 Rotate cards
-Offset cards in hand to space them out
 Apply back of card to computer cards in hand.
 Integrate jinternalframe for rules -  add to menu
 Integrate point system
