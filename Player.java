@@ -7,7 +7,9 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Scanner;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Player {
 	private int bid;
@@ -27,11 +29,11 @@ public class Player {
 	private int[] handZoneOffset;
 	Card playerCard;
 
-	private ArrayList<Card> hand;
+	private CopyOnWriteArrayList <Card> hand;
 
 	public Player(String name) {
 		this.name = name;
-		hand = new ArrayList<Card>();
+		hand = new CopyOnWriteArrayList <Card>();
 		playZone = new int[2];
 		handZone = new int[2];
 	}
@@ -58,6 +60,8 @@ public class Player {
 		card.setOwner(this);
 		card.setDestination(getHandZoneX(), getHandZoneY());
 		hand.add(card);
+		this.calcAndApplyOffsets();
+		this.setRectangles();
 		card.setFaceUp(true);
 	}
 
@@ -81,7 +85,16 @@ public class Player {
 		setRectangles();
 		sp.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				for (Card card : hand) {
+//				for (Card card : hand) {
+//					if (card.getRec().contains(e.getPoint())) {
+//						System.out.println(card + " was clicked");
+//						playerCard = card;
+//						System.out.println(playerCard.toString());
+//					}
+//				}
+				Iterator<Card> itr = hand.iterator();
+				while(itr.hasNext()) {
+					Card card = itr.next();
 					if (card.getRec().contains(e.getPoint())) {
 						System.out.println(card + " was clicked");
 						playerCard = card;
@@ -275,7 +288,7 @@ public class Player {
 		this.totalPoints = totalPoints;
 	}
 
-	public ArrayList<Card> getHand() {
+	public CopyOnWriteArrayList <Card> getHand() {
 		return hand;
 	}
 
@@ -287,7 +300,7 @@ public class Player {
 		this.partner = partner;
 	}
 
-	public void setHand(ArrayList<Card> hand) {
+	public void setHand(CopyOnWriteArrayList <Card> hand) {
 		this.hand = hand;
 	}
 

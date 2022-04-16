@@ -120,6 +120,12 @@ public class SpadesPanel extends JPanel implements Runnable{
 				}
 			}
 		}
+		for(Player p : players) {
+			lock = true;
+			while(lock) {
+				lock = p.waitForCards();
+			}
+		}
 		//Sort hands
 		for(Player p : players) {
 			p.sortHand();

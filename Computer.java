@@ -31,8 +31,9 @@ public class Computer extends Player {
 	
 	public void addCard(Card card) {
 		card.setOwner(this);
-		card.setDestination(getHandZoneX(), getHandZoneY());
+//		card.setDestination(getHandZoneX(), getHandZoneY());
 		getHand().add(card);
+		this.calcAndApplyOffsets();
 		card.setFaceUp(false);
 	}
 
@@ -210,7 +211,9 @@ public class Computer extends Player {
 		setSelectedCard(playedCard);
 		getSelectedCard().setDestination(getPlayZone());
 		getHand().remove(playedCard);
-		resetAndRecalcOffset();
+		if(getHand().size() > 0) {
+			resetAndRecalcOffset();
+		}
 		return playedCard;
 	}
 }

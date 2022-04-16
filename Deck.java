@@ -3,10 +3,12 @@ package Project;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Deck {
 
-	private ArrayList<Card> deck = new ArrayList<Card>();
+	private CopyOnWriteArrayList<Card> deck = new CopyOnWriteArrayList <Card>();
 	private static final int NUM_CARDS_OF_SUIT = 13;
 
 	public Deck() {
@@ -26,7 +28,9 @@ public class Deck {
 	}
 
 	public void draw(Graphics2D g2) {
-		for(Card card : deck) {
+		Iterator<Card> itr = deck.iterator();
+		while(itr.hasNext()) {
+			Card card = itr.next();
 			card.draw(g2);
 		}
 	}
