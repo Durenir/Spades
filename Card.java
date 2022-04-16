@@ -135,7 +135,7 @@ public class Card {
 	public void setPosition(int[] postion) {
 		this.position = postion;
 	}
-	
+
 	public void setPosition(int x, int y) {
 		this.position[0] = x;
 		this.position[1] = y;
