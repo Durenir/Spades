@@ -30,6 +30,21 @@ public class Deck {
 			card.draw(g2);
 		}
 	}
+	
+	public void setPosition(int x, int y) {
+		for(Card card: deck) {
+			card.setDestination(x, y);
+		}
+	}
+	
+	public boolean checkPositionReady() {
+		for(Card card : deck) {
+			if(card.getPosition()[0] != card.getDestination()[0]) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	public Card drawCard() {
 		return deck.remove(0);

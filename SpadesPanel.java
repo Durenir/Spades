@@ -103,6 +103,11 @@ public class SpadesPanel extends JPanel implements Runnable{
 		players.add(computer2);
 		players.add(computer3);
 
+		deck.setPosition(this.getWidth()/2, this.getHeight()/2);
+		boolean lock = false;
+		while(!lock) {
+			lock = deck.checkPositionReady();
+		}
 		//Deal cards
 		while(!deck.isEmpty()) {
 			for(Player p : players) {

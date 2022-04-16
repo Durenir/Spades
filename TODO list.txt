@@ -1,5 +1,4 @@
 Rotate cards
-Apply back of card to computer cards in hand.
 Integrate jinternalframe for rules -  add to menu
 Integrate point system
 Integrate UI for scoring
