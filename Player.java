@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -13,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Player {
 	private int bid;
-	private int tricks;
+	private int tricks = 0;
 	private int bags;
 	private int totalTricks;
 	private int totalBags;
@@ -263,6 +261,10 @@ public class Player {
 	public void setTricks(int tricks) {
 		this.tricks = tricks;
 	}
+
+	public void incrementTricks(){ this.tricks++; }
+
+	public void resetTricks() {this.tricks = 0; }
 
 	public int getTotalBags() {
 		return totalBags;

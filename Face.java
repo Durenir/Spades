@@ -1,5 +1,3 @@
-package Project;
-
 public enum Face {
 	ACE("Ace"), TWO("Two"), THREE("Three"), FOUR("Four"),
 	FIVE("Five"), SIX("Six"), SEVEN("Seven"), EIGHT("Eight"),

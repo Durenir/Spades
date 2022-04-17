@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.Graphics2D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
