@@ -9,7 +9,12 @@ public class ScoreFrame extends JFrame {
 
   public ScoreFrame(String[] cn, String[][] d){
 
-    JTable k = new JTable(d, cn);
+    JTable k = new JTable(d, cn) {
+        public boolean isCellEditable(int row, int column) {
+            //all cells false
+            return false;
+         }
+    };
     JScrollPane sp = new JScrollPane(k);
     add(sp);
 
