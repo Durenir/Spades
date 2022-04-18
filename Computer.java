@@ -28,7 +28,7 @@ public class Computer extends Player {
 			card.draw(g2);
 		}
 	}
-	
+
 	public void addCard(Card card) {
 		card.setOwner(this);
 //		card.setDestination(getHandZoneX(), getHandZoneY());

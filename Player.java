@@ -13,7 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Player {
 	private int bid;
-	private int tricks;
+	private int tricks = 0;
 	private int bags;
 	private int totalTricks;
 	private int totalBags;
@@ -150,6 +150,9 @@ public class Player {
 					valid = true;
 				}
 			} else {
+				if(SpadesPanel.reset) {
+					return null;
+				}
 				Thread.yield();
 			}
 		}
@@ -263,6 +266,10 @@ public class Player {
 	public void setTricks(int tricks) {
 		this.tricks = tricks;
 	}
+
+	public void incrementTricks(){ this.tricks++; }
+
+	public void resetTricks() {this.tricks = 0; }
 
 	public int getTotalBags() {
 		return totalBags;
