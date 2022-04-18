@@ -1,7 +1,10 @@
 package Project;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Deque;
+import java.util.Enumeration;
 import java.util.LinkedList;
 
 import javax.swing.*;
@@ -63,15 +66,15 @@ public class SpadesPanel extends JPanel implements Runnable{
 		Computer computer1 = new Computer("Computer 1");
 		Computer computer2 = new Computer("Computer 2");
 		Computer computer3 = new Computer("Computer 3");
-		Player computer4 = new Player("Computer 4");
+		final Player player = new Player("Player");
 
 		//Set up partners
 		computer1.setPartner(computer3);
 		computer3.setPartner(computer1);
-		computer4.setPartner(computer2);
-		computer2.setPartner(computer4);
+		player.setPartner(computer2);
+		computer2.setPartner(player);
 
-		computer4.setPlayZone(zone1X, zone1Y);
+		player.setPlayZone(zone1X, zone1Y);
 		computer1.setPlayZone(zone2X, zone2Y);
 		computer2.setPlayZone(zone3X, zone3Y);
 		computer3.setPlayZone(zone4X, zone4Y);
@@ -86,7 +89,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		int[] handZone3OffsetModifier = {-(Card.getWidth() / 2), 0};
 		int[] handZone4OffsetModifier = {0, -(Card.getWidth() / 2)};
 
-		computer4.setHandZone(handZone1X, handZone1Y, handZone1Offset, handZone1OffsetModifier, handZone1Width);
+		player.setHandZone(handZone1X, handZone1Y, handZone1Offset, handZone1OffsetModifier, handZone1Width);
 		computer1.setHandZone(handZone2X, handZone2Y, handZone2Offset, handZone2OffsetModifier, handZone2Width);
 		computer2.setHandZone(handZone3X, handZone3Y, handZone3Offset, handZone3OffsetModifier, handZone3Width);
 		computer3.setHandZone(handZone4X, handZone4Y, handZone4Offset, handZone4OffsetModifier, handZone4Width);
@@ -96,7 +99,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 		//Add players to array of players
 		players.clear();
-		players.add(computer4);
+		players.add(player);
 		players.add(computer1);
 		players.add(computer2);
 		players.add(computer3);
@@ -145,11 +148,12 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 		// populate this Dialog box iff there is a human player...
 		// NOTE - the game will still execute if this nothing happens here...
-		JDialog dialog = new JDialog(parentFrame, "Bid Input");
+		final JDialog dialog = new JDialog(parentFrame, "Bid Input");
 		dialog.setLayout(new FlowLayout());
 
 		dialog.setSize(700, 100);
 		dialog.setResizable(false);
+		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
 
 		JRadioButton rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11,
@@ -195,7 +199,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		rb13 = new JRadioButton("13");
 		rb13.setBounds(100,65,100,30);
 
-		ButtonGroup bg = new ButtonGroup();
+		final ButtonGroup bg = new ButtonGroup();
 		bg.add(rb1);
 		bg.add(rb2);
 		bg.add(rb3);
@@ -227,6 +231,31 @@ public class SpadesPanel extends JPanel implements Runnable{
 		dialog.add(setBid);
 		dialog.revalidate();
 		dialog.repaint();
+		//TODO need to calc computer bids
+		computer1.setBid(1);
+		computer2.setBid(1);
+		computer3.setBid(1);
+		setBid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
+			        AbstractButton button = buttons.nextElement();
+			        if (button.isSelected()) {
+			        	System.out.println(button.getText() + " was selected");
+			        	player.setBid(Integer.parseInt(button.getText()));
+			        	dialog.dispose();
+			        }
+			    }
+			}
+		});
+	}
+
+	private boolean bidLock() {
+		for(Player p : players) {
+			if(p.getBid() == 0) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void initGameThread() {
@@ -238,10 +267,12 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 		// initialize game variables
 		initGame();
-
 		// while score < 500, continue to play
 
-
+		boolean bidLock = true;
+		while(bidLock) {
+			bidLock = bidLock();
+		}
 		// for-loop control a round, one round has 13 plays
 		for(int i = 0; i < 13; i++) {
 			if(reset) { break; }
@@ -379,11 +410,11 @@ public class SpadesPanel extends JPanel implements Runnable{
 		}
 		g2.dispose();
 	}
-	
+
 	public boolean getExitStatus() {
 		return reset;
 	}
-	
+
 	public static void resetGame() {
 		reset = true;
 	}
