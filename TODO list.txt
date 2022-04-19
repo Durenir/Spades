@@ -1,10 +1,7 @@
 Integrate point system
-Integrate UI for scoring
 Save/Load jinteralframe end of round to save, menu bar with new game/load game
 jinternalframe at the end of the game to show scores/winner and play again button.
 
-Fixes: 	Only one bid radio button selected at a time.
-		Rectangle for bid/tricks for each player
-		calculate computer bids
+Fixes: 	calculate computer bids
 		Loop logic for 500 points
 		UI for end of game with play again button
