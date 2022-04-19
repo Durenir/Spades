@@ -1,6 +1,7 @@
 package Project;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -22,8 +23,11 @@ public class Computer extends Player {
 	}
 
 	public void draw(Graphics2D g2) {
-		g2.setColor(new Color(39, 47, 98));
-		g2.fill(this.getScoreZone());
+		g2.setFont(new Font("Sego UI semibold", Font.PLAIN, 12));
+		g2.setColor(Color.WHITE);
+		g2.drawString(String.valueOf("Name: " + this.getName()), getScoreZone().x, getScoreZone().y + 12);
+		g2.drawString(String.valueOf("Bid: " + this.getBid()), getScoreZone().x, getScoreZone().y + 12 * 2);
+		g2.drawString(String.valueOf("Tricks: " + this.getTricks()), getScoreZone().x, getScoreZone().y + (12 * 3));
 		if(getSelectedCard() != null) {
 			getSelectedCard().draw(g2);
 		}
@@ -38,6 +42,10 @@ public class Computer extends Player {
 		getHand().add(card);
 		this.calcAndApplyOffsets();
 		card.setFaceUp(false);
+	}
+	
+	public void getBidInput(SpadesPanel sp) {
+		this.setBid(3);
 	}
 
 	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {

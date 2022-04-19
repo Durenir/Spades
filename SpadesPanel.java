@@ -17,6 +17,11 @@ public class SpadesPanel extends JPanel implements Runnable{
 	Deck deck;
 	boolean spadesBroken;
 	public static boolean reset;
+	private int team1TotalScore;
+	private int team2TotalScore;
+	int team1TotalBags;
+	int team2TotalBags;
+
 
 	public SpadesPanel() {
 		this.setPreferredSize(new Dimension(750, 750));
@@ -63,10 +68,10 @@ public class SpadesPanel extends JPanel implements Runnable{
 		int handZone4Width = this.getHeight();
 
 		//Initialize players
-		Computer computer1 = new Computer("Computer 1");
-		Computer computer2 = new Computer("Computer 2");
-		Computer computer3 = new Computer("Computer 3");
-		final Player player = new Player("Player");
+		Computer computer1 = new Computer("Mike");
+		Computer computer2 = new Computer("Bill (Partner)");
+		Computer computer3 = new Computer("Lisa");
+		final Player player = new Player("You");
 
 		//Set up partners
 		computer1.setPartner(computer3);
@@ -93,7 +98,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		computer1.setHandZone(handZone2X, handZone2Y, handZone2Offset, handZone2OffsetModifier, handZone2Width);
 		computer2.setHandZone(handZone3X, handZone3Y, handZone3Offset, handZone3OffsetModifier, handZone3Width);
 		computer3.setHandZone(handZone4X, handZone4Y, handZone4Offset, handZone4OffsetModifier, handZone4Width);
-		
+
         // bid zone 1 -- lower left corner
         int bidZone1X = Card.getWidth() + 10;
         int bidZone1Y = (this.getHeight()/2) - 37;
@@ -122,11 +127,37 @@ public class SpadesPanel extends JPanel implements Runnable{
 		players.add(computer1);
 		players.add(computer2);
 		players.add(computer3);
+	}
 
+	private boolean bidLock() {
+		for(Player p : players) {
+			if(p.getBid() == 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void initGameThread() {
+		gameThread = new Thread(this);
+		gameThread.start();
+	}
+
+	public void setupRound() {
+		spadesBroken = false;
+		deck = new Deck();
+		deck.shuffle();
 		deck.setPosition((this.getWidth()/2) - Card.getWidth()/2, (this.getHeight()/2) - Card.getHeight()/2);
 		boolean lock = false;
 		while(!lock) {
 			lock = deck.checkPositionReady();
+		}
+		while(players.getFirst().getName() != "You") {
+			Player temp = players.removeFirst();
+			players.add(temp);
+		}
+		for(Player p : players) {
+			p.reset();
 		}
 		//Deal cards
 		while(!deck.isEmpty()) {
@@ -152,141 +183,13 @@ public class SpadesPanel extends JPanel implements Runnable{
 			System.out.println(p.getHand());
 			p.calcAndApplyOffsets();
 		}
-
-		// Enter bid -- only do this for a human player
-		System.out.println("Enter bid...");
-
-		/*https://stackoverflow.com/questions/10522121/instantiate-jdialog-from
-		-jpanel*/
-
-		Window parentWindow = SwingUtilities.windowForComponent(this);
-		Frame parentFrame = null;
-		if(parentWindow instanceof Frame){
-			parentFrame = (Frame) parentWindow;
-		}
-
-		// populate this Dialog box iff there is a human player...
-		// NOTE - the game will still execute if this nothing happens here...
-		final JDialog dialog = new JDialog(parentFrame, "Bid Input");
-		dialog.setLayout(new FlowLayout());
-
-		dialog.setSize(700, 100);
-		dialog.setResizable(false);
-		dialog.setLocationRelativeTo(null);
-		dialog.setVisible(true);
-
-		JRadioButton rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11,
-						rb12, rb13;
-		JButton setBid;
-
-		rb1 = new JRadioButton("1");
-		rb1.setBounds(100,5,100,30);
-
-		rb2 = new JRadioButton("2");
-		rb2.setBounds(100,10,100,30);
-
-		rb3 = new JRadioButton("3");
-		rb3.setBounds(100,15,100,30);
-
-		rb4 = new JRadioButton("4");
-		rb4.setBounds(100,20,100,30);
-
-		rb5 = new JRadioButton("5");
-		rb5.setBounds(100,25,100,30);
-
-		rb6 = new JRadioButton("6");
-		rb6.setBounds(100,30,100,30);
-
-		rb7 = new JRadioButton("7");
-		rb7.setBounds(100,35,100,30);
-
-		rb8 = new JRadioButton("8");
-		rb8.setBounds(100,40,100,30);
-
-		rb9 = new JRadioButton("9");
-		rb9.setBounds(100,45,100,30);
-
-		rb10 = new JRadioButton("10");
-		rb10.setBounds(100,50,100,30);
-
-		rb11 = new JRadioButton("11");
-		rb11.setBounds(100,55,100,30);
-
-		rb12 = new JRadioButton("12");
-		rb12.setBounds(100,60,100,30);
-
-		rb13 = new JRadioButton("13");
-		rb13.setBounds(100,65,100,30);
-
-		final ButtonGroup bg = new ButtonGroup();
-		bg.add(rb1);
-		bg.add(rb2);
-		bg.add(rb3);
-		bg.add(rb4);
-		bg.add(rb5);
-		bg.add(rb6);
-		bg.add(rb7);
-		bg.add(rb8);
-		bg.add(rb9);
-		bg.add(rb10);
-		bg.add(rb11);
-		bg.add(rb12);
-		bg.add(rb12);
-		bg.add(rb13);
-		setBid = new JButton("Set Bid");
-		setBid.setBounds(10, 10, 20, 20);
-		dialog.add(rb1);
-		dialog.add(rb2);
-		dialog.add(rb3);
-		dialog.add(rb4);
-		dialog.add(rb5);
-		dialog.add(rb6);
-		dialog.add(rb7);
-		dialog.add(rb8);
-		dialog.add(rb9);
-		dialog.add(rb10);
-		dialog.add(rb11);
-		dialog.add(rb12);
-		dialog.add(rb13);
-		dialog.add(setBid);
-		dialog.revalidate();
-		dialog.repaint();
-		//TODO need to calc computer bids
-		computer1.setBid(1);
-		computer2.setBid(1);
-		computer3.setBid(1);
-		setBid.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
-			        AbstractButton button = buttons.nextElement();
-			        if (button.isSelected()) {
-			        	System.out.println(button.getText() + " was selected");
-			        	player.setBid(Integer.parseInt(button.getText()));
-			        	dialog.dispose();
-			        }
-			    }
-			}
-		});
-	}
-
-	private boolean bidLock() {
 		for(Player p : players) {
-			if(p.getBid() == 0) {
-				return true;
-			}
+			p.getBidInput(this);
 		}
-		return false;
 	}
-
-	public void initGameThread() {
-		gameThread = new Thread(this);
-		gameThread.start();
-	}
-
 	public void playSpades() {
-
-		// initialize game variables
-		initGame();
+		while(!reset && this.team1TotalScore < 500 && this.team2TotalScore < 500) {
+		setupRound();
 		// while score < 500, continue to play
 
 		boolean bidLock = true;
@@ -343,12 +246,79 @@ public class SpadesPanel extends JPanel implements Runnable{
 			}
 		}
 		if(!reset) {
+			for(Player p : players) {
+				if(p.getTricks() > p.getBid()) {
+					p.setBags(p.getTricks() - p.getBid());
+				}
+			}
 		// *** CALCULATE SCORE *****************************************************
-		int team1TotalTricks =
-						players.getFirst().getTricks() + players.getFirst().getPartner().getTricks();
+			int team1CombinedBid = players.getFirst().getBid() + players.getFirst().getPartner().getBid();
+			int team2CombinedBid = players.getLast().getBid() + players.getLast().getPartner().getBid();
 
-		int team2TotalTricks =
-						players.getLast().getTricks() + players.getLast().getPartner().getTricks();
+			int team1CombinedTricks = players.getFirst().getTricks() + players.getFirst().getPartner().getTricks();
+			int team2CombinedTricks = players.getLast().getTricks() + players.getLast().getPartner().getTricks();
+
+			int team1CombinedBags = team1CombinedTricks - team1CombinedBid;
+			int team2CombinedBags = team2CombinedTricks - team2CombinedBid;
+
+			if(team1CombinedBags <= 0) {
+				team1CombinedBags = 0;
+			}
+			team1TotalBags += team1CombinedBags;
+			players.getFirst().setTotalBags(players.getFirst().getTotalBags()+ team1TotalBags);
+			players.getFirst().getPartner().setTotalBags(players.getFirst().getPartner().getTotalBags() + team1TotalBags);
+			players.getFirst().setBags(0);
+			players.getFirst().getPartner().setBags(0);
+
+			if(team2CombinedBags <= 0) {
+				team2CombinedBags = 0;
+			}
+			team2TotalBags += team2CombinedBags;
+			players.getLast().setTotalBags(players.getLast().getTotalBags() + team2TotalBags);
+			players.getLast().getPartner().setTotalBags(players.getLast().getPartner().getTotalBags() + team2TotalBags);
+			players.getLast().setBags(0);
+			players.getLast().getPartner().setBags(0);
+
+
+		int team1BidScore;
+		int team1BagScore = 0;
+		int team1PointsThisRound;
+
+		int team2BidScore;
+		int team2BagScore = 0;
+		int team2PointsThisRound;
+
+		if(team1CombinedBid > team1CombinedTricks) {
+			team1BidScore = -team1CombinedBid * 10;
+		} else {
+			team1BidScore = team1CombinedBid * 10;
+		}
+
+		if(team1CombinedBags > 0) {
+			if(team1TotalBags < 10) {
+				team1BagScore = team1CombinedBags;
+			} else {
+				team1BagScore = -100;
+			}
+		}
+		team1PointsThisRound = team1BidScore + team1BagScore;
+		team1TotalScore += team1PointsThisRound;
+
+		if(team2CombinedBid > team2CombinedTricks) {
+			team2BidScore = -team2CombinedBid * 10;
+		} else {
+			team2BidScore = team2CombinedBid * 10;
+		}
+
+		if(team2CombinedBags > 0) {
+			if(team2TotalBags < 10) {
+				team2BagScore = team2CombinedBags;
+			} else {
+				team2BagScore = -100;
+			}
+		}
+		team2PointsThisRound = team2BidScore + team2BagScore;
+		team2TotalScore += team2PointsThisRound;
 
 
 		// *** DISPLAY SCORE AND PROMPT FOR NEXT ROUND OR DISPLAY WINNER ***********
@@ -361,15 +331,26 @@ public class SpadesPanel extends JPanel implements Runnable{
 			parentFrame = (Frame) parentWindow;
 		}
 
-
-		final String[] columnNames = {"Player", "Bids", "Tricks", "Bags", "Points",
-						"Total Points"};
+		final String[] columnNames = {"", players.getFirst().getName() + " and " + players.getFirst().getPartner().getName(),
+				players.getLast().getName() + " and " + players.getLast().getPartner().getName()};
 
 		String[][] data = {
-						{ "Player 1", "2", "3", "1", "4", "9" },
-						{ "Player 2", "4", "3", "1", "5", "8" },
-						{ "Player 3", "6", "9", "1", "4", "7" },
-						{ "Player 4", "8", "1", "1", "5", "6" }};
+		{ "Combined Bid", String.valueOf(team1CombinedBid), String.valueOf(team2CombinedBid)},
+		{ "Tricks Taken", String.valueOf(team1CombinedTricks), String.valueOf(team2CombinedTricks)},
+		{ "Bags", String.valueOf(team1CombinedBags), String.valueOf(team2CombinedBags)},
+		{ "Total Bags", String.valueOf(team1TotalBags), String.valueOf(team2TotalBags)},
+		{ "Bid Score", String.valueOf(team1BidScore), String.valueOf(team2BidScore)},
+		{ "Bag Score", String.valueOf(team1BagScore), String.valueOf(team2BagScore)},
+		{ "Points this round", String.valueOf(team1PointsThisRound), String.valueOf(team2PointsThisRound)},
+		{ "Total points", String.valueOf(team1TotalScore), String.valueOf(team2TotalScore) }};
+//		final String[] columnNames = {"Player", "Bids", "Tricks", "Bags", "Points",
+//						"Total Points"};
+//
+//		String[][] data = {
+//						{ "Player 1", "2", "3", "1", "4", "9" },
+//						{ "Player 2", "4", "3", "1", "5", "8" },
+//						{ "Player 3", "6", "9", "1", "4", "7" },
+//						{ "Player 4", "8", "1", "1", "5", "6" }};
 
 		// not sure if this will persist between rounds
 		ScoreFrame scores = new ScoreFrame(columnNames, data);
@@ -390,12 +371,13 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 
 		} else {
-			System.out.println("Quiting");
 			gameThread.stop();
 			gameThread = null;
 			this.newGame();
 		}
 		reset = false;
+		}
+		//Break ties, display results with play again button. Action listener calls newGame();
 	}
 
 	public void run() {
@@ -444,9 +426,8 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 	public void newGame(){
 		reset = false;
-		deck = new Deck();
-		deck.shuffle();
 		initGameThread();
+		initGame();
 		playSpades();
 	}
 }

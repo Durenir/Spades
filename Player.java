@@ -1,16 +1,30 @@
 package Project;
 
 import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JRadioButton;
+import javax.swing.SwingUtilities;
 
 public class Player {
 	private int bid;
@@ -28,6 +42,7 @@ public class Player {
 	private int handZoneWidth;
 	private int[] handZoneCardOffsetModifier;
 	private int[] handZoneOffset;
+	private int[] handZoneOffsetMarker;
 	Card playerCard;
 	private Rectangle scoreZone;
 
@@ -38,6 +53,7 @@ public class Player {
 		hand = new CopyOnWriteArrayList <Card>();
 		playZone = new int[2];
 		handZone = new int[2];
+		handZoneOffsetMarker = new int[2];
 		scoreZone = new Rectangle();
 	}
 
@@ -51,9 +67,11 @@ public class Player {
 	}
 
 	public void draw(Graphics2D g2) {
-		g2.setColor(new Color(39, 47, 98));
-		g2.fill(this.scoreZone);
-		g2.drawString("Test", scoreZone.x, scoreZone.y);
+		g2.setFont(new Font("Sego UI semibold", Font.PLAIN, 12));
+		g2.setColor(Color.WHITE);
+		g2.drawString(String.valueOf("Name: " + this.getName()), getScoreZone().x, getScoreZone().y + 12);
+		g2.drawString(String.valueOf("Bid: " + this.getBid()), getScoreZone().x, getScoreZone().y + 12 * 2);
+		g2.drawString(String.valueOf("Tricks: " + this.getTricks()), getScoreZone().x, getScoreZone().y + (12 * 3));
 		if (selectedCard != null) {
 			selectedCard.draw(g2);
 		}
@@ -175,6 +193,134 @@ public class Player {
 						.getPosition()[1], Card.getWidth(), Card.getHeight()));
 			}
 		}
+	}
+
+	public void getBidInput(SpadesPanel sp) {
+		// Enter bid -- only do this for a human player
+		System.out.println("Enter bid...");
+
+		/*https://stackoverflow.com/questions/10522121/instantiate-jdialog-from
+		-jpanel*/
+
+		Window parentWindow = SwingUtilities.windowForComponent(sp);
+		Frame parentFrame = null;
+		if(parentWindow instanceof Frame){
+			parentFrame = (Frame) parentWindow;
+		}
+
+		// populate this Dialog box iff there is a human player...
+		// NOTE - the game will still execute if this nothing happens here...
+		final JDialog dialog = new JDialog(parentFrame, "Bid Input");
+		dialog.setLayout(new FlowLayout());
+
+		dialog.setSize(700, 100);
+		dialog.setResizable(false);
+		dialog.setLocationRelativeTo(null);
+		dialog.setVisible(true);
+
+		JRadioButton rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11,
+						rb12, rb13;
+		JButton setBid;
+
+		rb1 = new JRadioButton("1");
+		rb1.setBounds(100,5,100,30);
+		rb1.setSelected(true);
+
+		rb2 = new JRadioButton("2");
+		rb2.setBounds(100,10,100,30);
+
+		rb3 = new JRadioButton("3");
+		rb3.setBounds(100,15,100,30);
+
+		rb4 = new JRadioButton("4");
+		rb4.setBounds(100,20,100,30);
+
+		rb5 = new JRadioButton("5");
+		rb5.setBounds(100,25,100,30);
+
+		rb6 = new JRadioButton("6");
+		rb6.setBounds(100,30,100,30);
+
+		rb7 = new JRadioButton("7");
+		rb7.setBounds(100,35,100,30);
+
+		rb8 = new JRadioButton("8");
+		rb8.setBounds(100,40,100,30);
+
+		rb9 = new JRadioButton("9");
+		rb9.setBounds(100,45,100,30);
+
+		rb10 = new JRadioButton("10");
+		rb10.setBounds(100,50,100,30);
+
+		rb11 = new JRadioButton("11");
+		rb11.setBounds(100,55,100,30);
+
+		rb12 = new JRadioButton("12");
+		rb12.setBounds(100,60,100,30);
+
+		rb13 = new JRadioButton("13");
+		rb13.setBounds(100,65,100,30);
+
+		final ButtonGroup bg = new ButtonGroup();
+		bg.add(rb1);
+		bg.add(rb2);
+		bg.add(rb3);
+		bg.add(rb4);
+		bg.add(rb5);
+		bg.add(rb6);
+		bg.add(rb7);
+		bg.add(rb8);
+		bg.add(rb9);
+		bg.add(rb10);
+		bg.add(rb11);
+		bg.add(rb12);
+		bg.add(rb12);
+		bg.add(rb13);
+		setBid = new JButton("Set Bid");
+		setBid.setBounds(10, 10, 20, 20);
+		dialog.add(rb1);
+		dialog.add(rb2);
+		dialog.add(rb3);
+		dialog.add(rb4);
+		dialog.add(rb5);
+		dialog.add(rb6);
+		dialog.add(rb7);
+		dialog.add(rb8);
+		dialog.add(rb9);
+		dialog.add(rb10);
+		dialog.add(rb11);
+		dialog.add(rb12);
+		dialog.add(rb13);
+		dialog.add(setBid);
+		dialog.revalidate();
+		dialog.repaint();
+		setBid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
+			        AbstractButton button = buttons.nextElement();
+			        if (button.isSelected()) {
+			        	System.out.println(button.getText() + " was selected");
+			        	setBid(Integer.parseInt(button.getText()));
+			        	dialog.dispose();
+			        }
+			    }
+			}
+		});
+	}
+
+	public void reset() {
+		bid = 0;
+		tricks = 0;
+		bags = 0;
+		System.out.println("Handzone is " + this.handZone[0] + ", " + this.handZone[1]);
+		System.out.println("Handzone offset is " + this.handZoneOffset[0] + ", " + this.handZoneOffset[1]);
+		System.out.println("HandzoneOffsetModifier is " + this.handZoneCardOffsetModifier[0] + ", " + this.handZoneCardOffsetModifier[1]);
+		this.handZoneOffset[0] = this.handZoneOffsetMarker[0];
+		this.handZoneOffset[1] = this.handZoneOffsetMarker[1];
+		System.out.println("Handzone offset is " + this.handZoneOffset[0] + ", " + this.handZoneOffset[1]);
+		System.out.println("Handzone is " + this.handZone[0] + ", " + this.handZone[1]);
+		System.out.println("HandzoneOffsetModifier is " + this.handZoneCardOffsetModifier[0] + ", " + this.handZoneCardOffsetModifier[1]);
 	}
 
 	public void sortHand() {
@@ -406,7 +552,9 @@ public class Player {
 		this.handZoneCardOffsetModifier[1] = yOffsetModifier;
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
-	}
+		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
+		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];
+		}
 
 	public void setHandZone(int x, int y, int[] offset, int[] offsetModifier,
 			int width) {
@@ -415,7 +563,9 @@ public class Player {
 		this.handZoneCardOffsetModifier = offsetModifier;
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
-	}
+		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
+		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];	
+		}
 
 	public void setHandZone(int[] handZone, int[] offset, int[] offsetModifier,
 			int width) {
@@ -423,9 +573,9 @@ public class Player {
 		this.handZoneCardOffsetModifier = offsetModifier;
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
-
-
-	}
+		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
+		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];
+		}
 
 	public Rectangle getScoreZone() {
 		return scoreZone;
