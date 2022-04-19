@@ -1,4 +1,4 @@
-package ProjectScratch;
+package Project;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
