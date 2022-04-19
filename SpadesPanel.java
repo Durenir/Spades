@@ -19,7 +19,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 	public static boolean reset;
 
 	public SpadesPanel() {
-		this.setPreferredSize(new Dimension(1000, 1000));
+		this.setPreferredSize(new Dimension(750, 750));
 		this.setBackground(new Color(71, 113, 72));
 		this.setDoubleBuffered(true);
 		this.setFocusable(true);
@@ -93,8 +93,27 @@ public class SpadesPanel extends JPanel implements Runnable{
 		computer1.setHandZone(handZone2X, handZone2Y, handZone2Offset, handZone2OffsetModifier, handZone2Width);
 		computer2.setHandZone(handZone3X, handZone3Y, handZone3Offset, handZone3OffsetModifier, handZone3Width);
 		computer3.setHandZone(handZone4X, handZone4Y, handZone4Offset, handZone4OffsetModifier, handZone4Width);
+		
+        // bid zone 1 -- lower left corner
+        int bidZone1X = Card.getWidth() + 10;
+        int bidZone1Y = (this.getHeight()/2) - 37;
 
+        // bid zone 2 -- upper left corner
+        int bidZone2X = this.getWidth()/2 - 50;
+        int bidZone2Y = Card.getHeight() + 10;
 
+        // bid zone 3 -- upper right corner
+        int bidZone3X = this.getWidth() - Card.getWidth() - 110;
+        int bidZone3Y = (this.getHeight()/2) - 37;
+
+        // bid zone 4 -- lower right corner
+        int bidZone4X = (this.getWidth()/2) - 50;
+        int bidZone4Y = this.getHeight() - Card.getHeight() - 85;
+
+        computer1.setScoreZone(bidZone1X, bidZone1Y);
+        computer2.setScoreZone(bidZone2X, bidZone2Y);
+        computer3.setScoreZone(bidZone3X, bidZone3Y);
+        player.setScoreZone(bidZone4X, bidZone4Y);
 
 
 		//Add players to array of players
@@ -104,7 +123,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		players.add(computer2);
 		players.add(computer3);
 
-		deck.setPosition(this.getWidth()/2, this.getHeight()/2);
+		deck.setPosition((this.getWidth()/2) - Card.getWidth()/2, (this.getHeight()/2) - Card.getHeight()/2);
 		boolean lock = false;
 		while(!lock) {
 			lock = deck.checkPositionReady();
@@ -213,6 +232,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		bg.add(rb11);
 		bg.add(rb12);
 		bg.add(rb12);
+		bg.add(rb13);
 		setBid = new JButton("Set Bid");
 		setBid.setBounds(10, 10, 20, 20);
 		dialog.add(rb1);
@@ -272,6 +292,9 @@ public class SpadesPanel extends JPanel implements Runnable{
 		boolean bidLock = true;
 		while(bidLock) {
 			bidLock = bidLock();
+			if(reset) {
+				//TODO get the dialog component and close it.
+			}
 		}
 		// for-loop control a round, one round has 13 plays
 		for(int i = 0; i < 13; i++) {

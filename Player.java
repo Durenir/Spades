@@ -1,5 +1,6 @@
 package Project;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
@@ -37,6 +38,7 @@ public class Player {
 		hand = new CopyOnWriteArrayList <Card>();
 		playZone = new int[2];
 		handZone = new int[2];
+		scoreZone = new Rectangle();
 	}
 
 	public void update() {
@@ -49,7 +51,9 @@ public class Player {
 	}
 
 	public void draw(Graphics2D g2) {
+		g2.setColor(new Color(39, 47, 98));
 		g2.fill(this.scoreZone);
+		g2.drawString("Test", scoreZone.x, scoreZone.y);
 		if (selectedCard != null) {
 			selectedCard.draw(g2);
 		}
@@ -430,7 +434,7 @@ public class Player {
 	public void setScoreZone(int x, int y) {
 		this.scoreZone.x = x;
 		this.scoreZone.y = y;
-		this.scoreZone.width = 20;
-		this.scoreZone.height = 10;
+		this.scoreZone.width = 100;
+		this.scoreZone.height = 75;
 	}
 }
