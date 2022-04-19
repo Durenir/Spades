@@ -1,4 +1,4 @@
-package Project;
+package ProjectScratch;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -28,6 +28,7 @@ public class Player {
 	private int[] handZoneCardOffsetModifier;
 	private int[] handZoneOffset;
 	Card playerCard;
+	private Rectangle scoreZone;
 
 	private CopyOnWriteArrayList <Card> hand;
 
@@ -48,6 +49,7 @@ public class Player {
 	}
 
 	public void draw(Graphics2D g2) {
+		g2.fillRect(scoreZone.x, scoreZone.y, 20, 10);
 		if (selectedCard != null) {
 			selectedCard.draw(g2);
 		}
@@ -417,5 +419,16 @@ public class Player {
 		this.handZoneCardOffsetModifier = offsetModifier;
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
+
+
+	}
+
+	public Rectangle getScoreZone() {
+		return scoreZone;
+	}
+
+	public void setScoreZone(int x, int y) {
+		this.scoreZone.width = x;
+		this.scoreZone.height = y;
 	}
 }
