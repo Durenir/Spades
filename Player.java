@@ -49,7 +49,7 @@ public class Player {
 	}
 
 	public void draw(Graphics2D g2) {
-		g2.fillRect(scoreZone.x, scoreZone.y, 20, 10);
+		g2.fill(this.scoreZone);
 		if (selectedCard != null) {
 			selectedCard.draw(g2);
 		}
@@ -428,7 +428,9 @@ public class Player {
 	}
 
 	public void setScoreZone(int x, int y) {
-		this.scoreZone.width = x;
-		this.scoreZone.height = y;
+		this.scoreZone.x = x;
+		this.scoreZone.y = y;
+		this.scoreZone.width = 20;
+		this.scoreZone.height = 10;
 	}
 }
