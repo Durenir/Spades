@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -196,6 +194,6 @@ public class Card {
 
 	public String toString() {
 		return(getFace().toString() + " of " + getSuit().toString() +
-				" has a value of " + getValue());
+						" has a value of " + getValue());
 	}
 }

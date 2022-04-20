@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -43,7 +41,7 @@ public class Computer extends Player {
 		this.calcAndApplyOffsets();
 		card.setFaceUp(false);
 	}
-	
+
 	public void getBidInput(SpadesPanel sp) {
 		int bid = 0;
 		int hearts = 0;
@@ -52,14 +50,14 @@ public class Computer extends Player {
 		int clubs = 0;
 		for(Card card : getHand()) {
 			switch(card.getValue()) {
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-				bid++;
-				break;
-			default:
-				break;
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+					bid++;
+					break;
+				default:
+					break;
 			}
 			if(card.getSuit().equals(Suit.CLUB)) {
 				clubs++;
@@ -121,7 +119,7 @@ public class Computer extends Player {
 					}
 				}
 			}
-		// Are we the first player and spades are broken?
+			// Are we the first player and spades are broken?
 		} else if(card == null && suit == null && spadesBroken) {
 			System.out.println("First to play and spades broken.");
 			suit = getHand().get(new SecureRandom().nextInt(getHand().size())).getSuit();
@@ -237,12 +235,12 @@ public class Computer extends Player {
 						if(card.getSuit() == Suit.SPADE && (highest.getValue() > card.getValue())) {
 							playedCard = highest;
 						} else {
-						//otherwise throw our lowest to win so we don't waste our high cards.
+							//otherwise throw our lowest to win so we don't waste our high cards.
 							playedCard = lowest;
 						}
 					} else {
 						System.out
-								.println("No spades to play. Playing offsuit.");
+										.println("No spades to play. Playing offsuit.");
 						// else play lowest off suit
 						for (Card currentCard : getHand()) {
 							if (currentCard.getSuit() != Suit.SPADE) {

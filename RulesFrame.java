@@ -1,5 +1,3 @@
-package Project;
-
 import javax.swing.*;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;

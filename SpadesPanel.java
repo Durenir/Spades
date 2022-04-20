@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -99,26 +97,26 @@ public class SpadesPanel extends JPanel implements Runnable{
 		computer2.setHandZone(handZone3X, handZone3Y, handZone3Offset, handZone3OffsetModifier, handZone3Width);
 		computer3.setHandZone(handZone4X, handZone4Y, handZone4Offset, handZone4OffsetModifier, handZone4Width);
 
-        // bid zone 1 -- lower left corner
-        int bidZone1X = Card.getWidth() + 10;
-        int bidZone1Y = (this.getHeight()/2) - 37;
+		// bid zone 1 -- lower left corner
+		int bidZone1X = Card.getWidth() + 10;
+		int bidZone1Y = (this.getHeight()/2) - 37;
 
-        // bid zone 2 -- upper left corner
-        int bidZone2X = this.getWidth()/2 - 50;
-        int bidZone2Y = Card.getHeight() + 10;
+		// bid zone 2 -- upper left corner
+		int bidZone2X = this.getWidth()/2 - 50;
+		int bidZone2Y = Card.getHeight() + 10;
 
-        // bid zone 3 -- upper right corner
-        int bidZone3X = this.getWidth() - Card.getWidth() - 110;
-        int bidZone3Y = (this.getHeight()/2) - 37;
+		// bid zone 3 -- upper right corner
+		int bidZone3X = this.getWidth() - Card.getWidth() - 110;
+		int bidZone3Y = (this.getHeight()/2) - 37;
 
-        // bid zone 4 -- lower right corner
-        int bidZone4X = (this.getWidth()/2) - 50;
-        int bidZone4Y = this.getHeight() - Card.getHeight() - 85;
+		// bid zone 4 -- lower right corner
+		int bidZone4X = (this.getWidth()/2) - 50;
+		int bidZone4Y = this.getHeight() - Card.getHeight() - 85;
 
-        computer1.setScoreZone(bidZone1X, bidZone1Y);
-        computer2.setScoreZone(bidZone2X, bidZone2Y);
-        computer3.setScoreZone(bidZone3X, bidZone3Y);
-        player.setScoreZone(bidZone4X, bidZone4Y);
+		computer1.setScoreZone(bidZone1X, bidZone1Y);
+		computer2.setScoreZone(bidZone2X, bidZone2Y);
+		computer3.setScoreZone(bidZone3X, bidZone3Y);
+		player.setScoreZone(bidZone4X, bidZone4Y);
 
 
 		//Add players to array of players
@@ -189,160 +187,160 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 	public void playSpades() {
 		while(!reset && this.team1TotalScore < 500 && this.team2TotalScore < 500) {
-		setupRound();
-		// while score < 500, continue to play
+			setupRound();
+			// while score < 500, continue to play
 
-		boolean bidLock = true;
-		while(bidLock) {
-			bidLock = bidLock();
-			if(reset) {
-				//TODO get the dialog component and close it.
+			boolean bidLock = true;
+			while(bidLock) {
+				bidLock = bidLock();
+				if(reset) {
+					//TODO get the dialog component and close it.
+				}
 			}
-		}
-		// for-loop control a round, one round has 13 plays
-		for(int i = 0; i < 13; i++) {
-			if(reset) { break; }
-			Card highest = null;
-			Suit suit = null;
-			for(Player p : players) {
-				Card playedCard = p.playCard(highest, suit, spadesBroken, this);
-				if(playedCard == null) {break;}
-				if(playedCard.getSuit() == Suit.SPADE && !spadesBroken) {
-					spadesBroken = true;
+			// for-loop control a round, one round has 13 plays
+			for(int i = 0; i < 13; i++) {
+				if(reset) { break; }
+				Card highest = null;
+				Suit suit = null;
+				for(Player p : players) {
+					Card playedCard = p.playCard(highest, suit, spadesBroken, this);
+					if(playedCard == null) {break;}
+					if(playedCard.getSuit() == Suit.SPADE && !spadesBroken) {
+						spadesBroken = true;
+					}
+					System.out.println(p.getName() + " played " + playedCard);
+					if(highest == null || ((playedCard.getValue() > highest.getValue()) &&
+									(playedCard.getSuit() == suit || playedCard.getSuit() == Suit.SPADE))) {
+						highest = playedCard;
+					}
+					if(suit == null) {
+						suit = playedCard.getSuit();
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
-				System.out.println(p.getName() + " played " + playedCard);
-				if(highest == null || ((playedCard.getValue() > highest.getValue()) &&
-								(playedCard.getSuit() == suit || playedCard.getSuit() == Suit.SPADE))) {
-					highest = playedCard;
-				}
-				if(suit == null) {
-					suit = playedCard.getSuit();
-				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				if(!reset) {
+
+					System.out.println("Winner is: " + highest.getOwner().getName());
+
+					highest.getOwner().incrementTricks();
+
+					while(players.getFirst() != highest.getOwner()) {
+						Player temp = players.removeFirst();
+						players.add(temp);
+					}
+					for(Player p : players) {
+						p.setSelectedCard(null);
+						System.out.println(p.getName());
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
 				}
 			}
 			if(!reset) {
-
-				System.out.println("Winner is: " + highest.getOwner().getName());
-
-				highest.getOwner().incrementTricks();
-
-				while(players.getFirst() != highest.getOwner()) {
-					Player temp = players.removeFirst();
-					players.add(temp);
-				}
 				for(Player p : players) {
-					p.setSelectedCard(null);
-					System.out.println(p.getName());
+					if(p.getTricks() > p.getBid()) {
+						p.setBags(p.getTricks() - p.getBid());
+					}
 				}
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
+				// *** CALCULATE SCORE *****************************************************
+				int team1CombinedBid = players.getFirst().getBid() + players.getFirst().getPartner().getBid();
+				int team2CombinedBid = players.getLast().getBid() + players.getLast().getPartner().getBid();
+
+				int team1CombinedTricks = players.getFirst().getTricks() + players.getFirst().getPartner().getTricks();
+				int team2CombinedTricks = players.getLast().getTricks() + players.getLast().getPartner().getTricks();
+
+				int team1CombinedBags = team1CombinedTricks - team1CombinedBid;
+				int team2CombinedBags = team2CombinedTricks - team2CombinedBid;
+
+				if(team1CombinedBags <= 0) {
+					team1CombinedBags = 0;
 				}
-			}
-		}
-		if(!reset) {
-			for(Player p : players) {
-				if(p.getTricks() > p.getBid()) {
-					p.setBags(p.getTricks() - p.getBid());
+				team1TotalBags += team1CombinedBags;
+				players.getFirst().setTotalBags(players.getFirst().getTotalBags()+ team1TotalBags);
+				players.getFirst().getPartner().setTotalBags(players.getFirst().getPartner().getTotalBags() + team1TotalBags);
+				players.getFirst().setBags(0);
+				players.getFirst().getPartner().setBags(0);
+
+				if(team2CombinedBags <= 0) {
+					team2CombinedBags = 0;
 				}
-			}
-		// *** CALCULATE SCORE *****************************************************
-			int team1CombinedBid = players.getFirst().getBid() + players.getFirst().getPartner().getBid();
-			int team2CombinedBid = players.getLast().getBid() + players.getLast().getPartner().getBid();
-
-			int team1CombinedTricks = players.getFirst().getTricks() + players.getFirst().getPartner().getTricks();
-			int team2CombinedTricks = players.getLast().getTricks() + players.getLast().getPartner().getTricks();
-
-			int team1CombinedBags = team1CombinedTricks - team1CombinedBid;
-			int team2CombinedBags = team2CombinedTricks - team2CombinedBid;
-
-			if(team1CombinedBags <= 0) {
-				team1CombinedBags = 0;
-			}
-			team1TotalBags += team1CombinedBags;
-			players.getFirst().setTotalBags(players.getFirst().getTotalBags()+ team1TotalBags);
-			players.getFirst().getPartner().setTotalBags(players.getFirst().getPartner().getTotalBags() + team1TotalBags);
-			players.getFirst().setBags(0);
-			players.getFirst().getPartner().setBags(0);
-
-			if(team2CombinedBags <= 0) {
-				team2CombinedBags = 0;
-			}
-			team2TotalBags += team2CombinedBags;
-			players.getLast().setTotalBags(players.getLast().getTotalBags() + team2TotalBags);
-			players.getLast().getPartner().setTotalBags(players.getLast().getPartner().getTotalBags() + team2TotalBags);
-			players.getLast().setBags(0);
-			players.getLast().getPartner().setBags(0);
+				team2TotalBags += team2CombinedBags;
+				players.getLast().setTotalBags(players.getLast().getTotalBags() + team2TotalBags);
+				players.getLast().getPartner().setTotalBags(players.getLast().getPartner().getTotalBags() + team2TotalBags);
+				players.getLast().setBags(0);
+				players.getLast().getPartner().setBags(0);
 
 
-		int team1BidScore;
-		int team1BagScore = 0;
-		int team1PointsThisRound;
+				int team1BidScore;
+				int team1BagScore = 0;
+				int team1PointsThisRound;
 
-		int team2BidScore;
-		int team2BagScore = 0;
-		int team2PointsThisRound;
+				int team2BidScore;
+				int team2BagScore = 0;
+				int team2PointsThisRound;
 
-		if(team1CombinedBid > team1CombinedTricks) {
-			team1BidScore = -team1CombinedBid * 10;
-		} else {
-			team1BidScore = team1CombinedBid * 10;
-		}
+				if(team1CombinedBid > team1CombinedTricks) {
+					team1BidScore = -team1CombinedBid * 10;
+				} else {
+					team1BidScore = team1CombinedBid * 10;
+				}
 
-		if(team1CombinedBags > 0) {
-			if(team1TotalBags < 10) {
-				team1BagScore = team1CombinedBags;
-			} else {
-				team1BagScore = -100;
-			}
-		}
-		team1PointsThisRound = team1BidScore + team1BagScore;
-		team1TotalScore += team1PointsThisRound;
+				if(team1CombinedBags > 0) {
+					if(team1TotalBags < 10) {
+						team1BagScore = team1CombinedBags;
+					} else {
+						team1BagScore = -100;
+					}
+				}
+				team1PointsThisRound = team1BidScore + team1BagScore;
+				team1TotalScore += team1PointsThisRound;
 
-		if(team2CombinedBid > team2CombinedTricks) {
-			team2BidScore = -team2CombinedBid * 10;
-		} else {
-			team2BidScore = team2CombinedBid * 10;
-		}
+				if(team2CombinedBid > team2CombinedTricks) {
+					team2BidScore = -team2CombinedBid * 10;
+				} else {
+					team2BidScore = team2CombinedBid * 10;
+				}
 
-		if(team2CombinedBags > 0) {
-			if(team2TotalBags < 10) {
-				team2BagScore = team2CombinedBags;
-			} else {
-				team2BagScore = -100;
-			}
-		}
-		team2PointsThisRound = team2BidScore + team2BagScore;
-		team2TotalScore += team2PointsThisRound;
+				if(team2CombinedBags > 0) {
+					if(team2TotalBags < 10) {
+						team2BagScore = team2CombinedBags;
+					} else {
+						team2BagScore = -100;
+					}
+				}
+				team2PointsThisRound = team2BidScore + team2BagScore;
+				team2TotalScore += team2PointsThisRound;
 
 
-		// *** DISPLAY SCORE AND PROMPT FOR NEXT ROUND OR DISPLAY WINNER ***********
-		// at the end of a round, total the score and print to a JDialog box
+				// *** DISPLAY SCORE AND PROMPT FOR NEXT ROUND OR DISPLAY WINNER ***********
+				// at the end of a round, total the score and print to a JDialog box
 
-		// NOTE: ONLY 1 LABEL PER DIALOG BOX -- NEEDS TO CHANGE...
-		Window parentWindow = SwingUtilities.windowForComponent(this);
-		Frame parentFrame = null;
-		if(parentWindow instanceof Frame){
-			parentFrame = (Frame) parentWindow;
-		}
+				// NOTE: ONLY 1 LABEL PER DIALOG BOX -- NEEDS TO CHANGE...
+				Window parentWindow = SwingUtilities.windowForComponent(this);
+				Frame parentFrame = null;
+				if(parentWindow instanceof Frame){
+					parentFrame = (Frame) parentWindow;
+				}
 
-		final String[] columnNames = {"", players.getFirst().getName() + " and " + players.getFirst().getPartner().getName(),
-				players.getLast().getName() + " and " + players.getLast().getPartner().getName()};
+				final String[] columnNames = {"", players.getFirst().getName() + " and " + players.getFirst().getPartner().getName(),
+								players.getLast().getName() + " and " + players.getLast().getPartner().getName()};
 
-		String[][] data = {
-		{ "Combined Bid", String.valueOf(team1CombinedBid), String.valueOf(team2CombinedBid)},
-		{ "Tricks Taken", String.valueOf(team1CombinedTricks), String.valueOf(team2CombinedTricks)},
-		{ "Bags", String.valueOf(team1CombinedBags), String.valueOf(team2CombinedBags)},
-		{ "Total Bags", String.valueOf(team1TotalBags), String.valueOf(team2TotalBags)},
-		{ "Bid Score", String.valueOf(team1BidScore), String.valueOf(team2BidScore)},
-		{ "Bag Score", String.valueOf(team1BagScore), String.valueOf(team2BagScore)},
-		{ "Points this round", String.valueOf(team1PointsThisRound), String.valueOf(team2PointsThisRound)},
-		{ "Total points", String.valueOf(team1TotalScore), String.valueOf(team2TotalScore) }};
+				String[][] data = {
+								{ "Combined Bid", String.valueOf(team1CombinedBid), String.valueOf(team2CombinedBid)},
+								{ "Tricks Taken", String.valueOf(team1CombinedTricks), String.valueOf(team2CombinedTricks)},
+								{ "Bags", String.valueOf(team1CombinedBags), String.valueOf(team2CombinedBags)},
+								{ "Total Bags", String.valueOf(team1TotalBags), String.valueOf(team2TotalBags)},
+								{ "Bid Score", String.valueOf(team1BidScore), String.valueOf(team2BidScore)},
+								{ "Bag Score", String.valueOf(team1BagScore), String.valueOf(team2BagScore)},
+								{ "Points this round", String.valueOf(team1PointsThisRound), String.valueOf(team2PointsThisRound)},
+								{ "Total points", String.valueOf(team1TotalScore), String.valueOf(team2TotalScore) }};
 //		final String[] columnNames = {"Player", "Bids", "Tricks", "Bags", "Points",
 //						"Total Points"};
 //
@@ -352,9 +350,9 @@ public class SpadesPanel extends JPanel implements Runnable{
 //						{ "Player 3", "6", "9", "1", "4", "7" },
 //						{ "Player 4", "8", "1", "1", "5", "6" }};
 
-		// not sure if this will persist between rounds
-		ScoreFrame scores = new ScoreFrame(columnNames, data);
-		scores.display();
+				// not sure if this will persist between rounds
+				ScoreFrame scores = new ScoreFrame(columnNames, data);
+				scores.display();
 
 //		JTable j = new JTable(data, columnNames);
 //		JScrollPane sp = new JScrollPane(j);
@@ -370,12 +368,12 @@ public class SpadesPanel extends JPanel implements Runnable{
 //		parentFrame.add(frame);
 
 
-		} else {
-			gameThread.stop();
-			gameThread = null;
-			this.newGame();
-		}
-		reset = false;
+			} else {
+				gameThread.stop();
+				gameThread = null;
+				this.newGame();
+			}
+			reset = false;
 		}
 		//Break ties, display results with play again button. Action listener calls newGame();
 	}

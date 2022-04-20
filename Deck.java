@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -34,13 +32,13 @@ public class Deck {
 			card.draw(g2);
 		}
 	}
-	
+
 	public void setPosition(int x, int y) {
 		for(Card card: deck) {
 			card.setDestination(x, y);
 		}
 	}
-	
+
 	public boolean checkPositionReady() {
 		for(Card card : deck) {
 			if(card.getPosition()[0] != card.getDestination()[0]) {

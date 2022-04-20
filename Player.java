@@ -1,5 +1,3 @@
-package Project;
-
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -99,7 +97,7 @@ public class Player {
 	}
 
 	public Card playCard(Card card, Suit suit, boolean spadesBroken,
-			SpadesPanel sp) {
+											 SpadesPanel sp) {
 		boolean valid = true;
 		boolean lock = true;
 		playerCard = null;
@@ -139,10 +137,10 @@ public class Player {
 						for (Card currentCard : getHand()) {
 							// Played a spade while still having the suit.
 							if (currentCard.getSuit() == suit
-									&& !suit.equals(Suit.SPADE)) {
+											&& !suit.equals(Suit.SPADE)) {
 								System.out.println("You can not play a "
-										+ playerCard.getSuit()
-										+ " while you have " + suit);
+												+ playerCard.getSuit()
+												+ " while you have " + suit);
 								valid = false;
 								continue;
 							}
@@ -152,10 +150,10 @@ public class Player {
 					for (Card currentCard : getHand()) {
 						// Played a spade while still having the suit.
 						if (currentCard.getSuit() == suit
-								&& playerCard.getSuit() != suit) {
+										&& playerCard.getSuit() != suit) {
 							System.out.println("You can not play a "
-									+ playerCard.getSuit() + " while you have "
-									+ suit);
+											+ playerCard.getSuit() + " while you have "
+											+ suit);
 							valid = false;
 							continue;
 						}
@@ -186,11 +184,11 @@ public class Player {
 		for (Card card : hand) {
 			if (card != hand.get(hand.size() - 1)) {
 				card.setRec(new Rectangle(card.getPosition()[0], card
-						.getPosition()[1], Card.getWidth() / 2, Card
-						.getHeight()));
+								.getPosition()[1], Card.getWidth() / 2, Card
+								.getHeight()));
 			} else {
 				card.setRec(new Rectangle(card.getPosition()[0], card
-						.getPosition()[1], Card.getWidth(), Card.getHeight()));
+								.getPosition()[1], Card.getWidth(), Card.getHeight()));
 			}
 		}
 	}
@@ -297,14 +295,14 @@ public class Player {
 		dialog.repaint();
 		setBid.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
-			        AbstractButton button = buttons.nextElement();
-			        if (button.isSelected()) {
-			        	System.out.println(button.getText() + " was selected");
-			        	setBid(Integer.parseInt(button.getText()));
-			        	dialog.dispose();
-			        }
-			    }
+				for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
+					AbstractButton button = buttons.nextElement();
+					if (button.isSelected()) {
+						System.out.println(button.getText() + " was selected");
+						setBid(Integer.parseInt(button.getText()));
+						dialog.dispose();
+					}
+				}
 			}
 		});
 	}
@@ -379,7 +377,7 @@ public class Player {
 		int[] temp = { handZoneOffset[0], handZoneOffset[1] };
 		for (Card card : hand) {
 			int[] firstPoint = { this.handZone[0] + temp[0],
-					this.handZone[1] + temp[1] };
+							this.handZone[1] + temp[1] };
 			card.setDestination(firstPoint);
 			temp[0] += this.handZoneCardOffsetModifier[0];
 			temp[1] += this.handZoneCardOffsetModifier[1];
@@ -388,7 +386,7 @@ public class Player {
 
 	public void resetAndRecalcOffset() {
 		System.out.println("---------" + handZoneOffset[0] + " "
-				+ handZoneOffset[1] + "----------------");
+						+ handZoneOffset[1] + "----------------");
 		if (handZoneOffset[0] > 0) {
 			handZoneOffset[0] += Card.getWidth() / hand.size();
 		} else if (handZoneOffset[0] < 0) {
@@ -545,7 +543,7 @@ public class Player {
 	}
 
 	public void setHandZone(int x, int y, int[] offset, int xOffsetModifier,
-			int yOffsetModifier, int width) {
+													int yOffsetModifier, int width) {
 		this.handZone[0] = x;
 		this.handZone[1] = y;
 		this.handZoneCardOffsetModifier[0] = xOffsetModifier;
@@ -554,28 +552,28 @@ public class Player {
 		this.handZoneWidth = width;
 		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
 		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];
-		}
+	}
 
 	public void setHandZone(int x, int y, int[] offset, int[] offsetModifier,
-			int width) {
+													int width) {
 		this.handZone[0] = x;
 		this.handZone[1] = y;
 		this.handZoneCardOffsetModifier = offsetModifier;
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
 		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
-		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];	
-		}
+		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];
+	}
 
 	public void setHandZone(int[] handZone, int[] offset, int[] offsetModifier,
-			int width) {
+													int width) {
 		this.handZone = handZone;
 		this.handZoneCardOffsetModifier = offsetModifier;
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
 		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
 		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];
-		}
+	}
 
 	public Rectangle getScoreZone() {
 		return scoreZone;
