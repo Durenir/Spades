@@ -45,7 +45,48 @@ public class Computer extends Player {
 	}
 	
 	public void getBidInput(SpadesPanel sp) {
-		this.setBid(3);
+		int bid = 0;
+		int hearts = 0;
+		int spades = 0;
+		int diamonds = 0;
+		int clubs = 0;
+		for(Card card : getHand()) {
+			switch(card.getValue()) {
+			case 11:
+			case 12:
+			case 13:
+			case 14:
+				bid++;
+				break;
+			default:
+				break;
+			}
+			if(card.getSuit().equals(Suit.CLUB)) {
+				clubs++;
+			}
+			if(card.getSuit().equals(Suit.HEART)) {
+				hearts++;
+			}
+			if(card.getSuit().equals(Suit.DIAMOND)) {
+				diamonds++;
+			}
+			if(card.getSuit().equals(Suit.SPADE)) {
+				spades++;
+			}
+		}
+		if(clubs <= 2) {
+			bid++;
+		}
+		if(hearts <= 2) {
+			bid++;
+		}
+		if(spades <= 2) {
+			bid--;
+		}
+		if(diamonds <= 2) {
+			bid++;
+		}
+		this.setBid(bid);
 	}
 
 	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {

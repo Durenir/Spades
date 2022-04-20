@@ -1,5 +1,4 @@
 Save/Load jinteralframe end of round to save, menu bar with new game/load game
 jinternalframe at the end of the game to show scores/winner and play again button.
 
-Fixes: 	calculate computer bids
-		UI for end of game with play again button
+Fixes: 	UI for end of game with play again button

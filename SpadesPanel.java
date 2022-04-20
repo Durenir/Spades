@@ -19,8 +19,8 @@ public class SpadesPanel extends JPanel implements Runnable{
 	public static boolean reset;
 	private int team1TotalScore;
 	private int team2TotalScore;
-	int team1TotalBags;
-	int team2TotalBags;
+	private int team1TotalBags;
+	private int team2TotalBags;
 
 
 	public SpadesPanel() {
@@ -425,6 +425,10 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 
 	public void newGame(){
+		team1TotalScore = 0;
+		team2TotalScore = 0;
+		team1TotalBags = 0;
+		team2TotalBags = 0;
 		reset = false;
 		initGameThread();
 		initGame();
