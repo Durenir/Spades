@@ -343,32 +343,9 @@ public class SpadesPanel extends JPanel implements Runnable{
 		{ "Bag Score", String.valueOf(team1BagScore), String.valueOf(team2BagScore)},
 		{ "Points this round", String.valueOf(team1PointsThisRound), String.valueOf(team2PointsThisRound)},
 		{ "Total points", String.valueOf(team1TotalScore), String.valueOf(team2TotalScore) }};
-//		final String[] columnNames = {"Player", "Bids", "Tricks", "Bags", "Points",
-//						"Total Points"};
-//
-//		String[][] data = {
-//						{ "Player 1", "2", "3", "1", "4", "9" },
-//						{ "Player 2", "4", "3", "1", "5", "8" },
-//						{ "Player 3", "6", "9", "1", "4", "7" },
-//						{ "Player 4", "8", "1", "1", "5", "6" }};
 
-		// not sure if this will persist between rounds
 		ScoreFrame scores = new ScoreFrame(columnNames, data);
 		scores.display();
-
-//		JTable j = new JTable(data, columnNames);
-//		JScrollPane sp = new JScrollPane(j);
-//		parentFrame.add(sp);
-//		parentFrame.pack();
-
-
-
-
-
-
-//		assert parentFrame != null;
-//		parentFrame.add(frame);
-
 
 		} else {
 			gameThread.stop();
@@ -378,6 +355,13 @@ public class SpadesPanel extends JPanel implements Runnable{
 		reset = false;
 		}
 		//Break ties, display results with play again button. Action listener calls newGame();
+		EndFrame eFrame = new EndFrame(this, players);
+		eFrame.display();
+		boolean newGameLock = false;
+		while(!newGameLock) {
+			newGameLock = reset;
+		}
+		this.newGame();
 	}
 
 	public void run() {
