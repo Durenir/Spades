@@ -3,12 +3,10 @@ package Project;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
-import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Random;
 
-public class Computer extends Player implements Serializable{
+public class Computer extends Player {
 
 	public Computer(String name) {
 		super(name);

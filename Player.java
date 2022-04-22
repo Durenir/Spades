@@ -11,13 +11,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
-import java.util.Scanner;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.AbstractButton;
@@ -27,7 +25,7 @@ import javax.swing.JDialog;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 
-public class Player implements Serializable{
+public class Player {
 	private int bid;
 	private int tricks = 0;
 	private int bags;
@@ -39,16 +37,16 @@ public class Player implements Serializable{
 	private String name;
 	private int[] playZone;
 	private int[] handZone;
-	private transient Card selectedCard;
+	private Card selectedCard;
 	private int handZoneWidth;
 	private int[] handZoneCardOffsetModifier;
 	private int[] handZoneOffset;
 	private int[] handZoneOffsetMarker;
-	transient Card playerCard;
+	Card playerCard;
 	private Rectangle scoreZone;
 	JDialog dialog;
 
-	private transient CopyOnWriteArrayList <Card> hand;
+	private CopyOnWriteArrayList <Card> hand;
 
 	public Player(String name) {
 		this.name = name;
@@ -115,13 +113,6 @@ public class Player implements Serializable{
 		setRectangles();
 		sp.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-//				for (Card card : hand) {
-//					if (card.getRec().contains(e.getPoint())) {
-//						System.out.println(card + " was clicked");
-//						playerCard = card;
-//						System.out.println(playerCard.toString());
-//					}
-//				}
 				Iterator<Card> itr = hand.iterator();
 				while(itr.hasNext()) {
 					Card card = itr.next();

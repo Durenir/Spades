@@ -1,28 +1,22 @@
 package Project;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.EOFException;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.util.Deque;
-import java.util.Enumeration;
-import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.swing.*;
-
-import HW6.Student;
 
 public class SpadesPanel extends JPanel implements Runnable{
 
@@ -38,6 +32,8 @@ public class SpadesPanel extends JPanel implements Runnable{
 	private int team2TotalScore;
 	private int team1TotalBags;
 	private int team2TotalBags;
+	private Player[] team1;
+	private Player[] team2;
 
 
 	public SpadesPanel() {
@@ -48,12 +44,12 @@ public class SpadesPanel extends JPanel implements Runnable{
 		//Initialize deck
 		deck = new Deck();
 		deck.shuffle();
+		team1 = new Player[2];
+		team2 = new Player[2];
 	}
 
 	public void initGame() {
 		spadesBroken = false;
-		//Calculate PlayZones
-		//TODO move this when resizable
 		int xCenter = this.getWidth()/2;
 		int yCenter = this.getHeight()/2;
 		int zone1X = xCenter - (Card.getWidth() / 2);
@@ -66,7 +62,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 		int zone4Y = yCenter - (Card.getHeight() / 2);
 
 		//Calculate HandZones
-		//TODO fix these
 		//Zone 1
 		int handZone1X = 0;
 		int handZone1Y = this.getHeight() - Card.getHeight();
@@ -141,9 +136,13 @@ public class SpadesPanel extends JPanel implements Runnable{
 		//Add players to array of players
 		players.clear();
 		players.add(player);
+		team1[0] = player;
 		players.add(computer1);
+		team2[0] = computer1;
 		players.add(computer2);
+		team1[1] = computer2;
 		players.add(computer3);
+		team2[1] = computer3;
 	}
 
 	private boolean bidLock() {
@@ -186,7 +185,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 				try {
 					Thread.sleep(100);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -273,11 +271,15 @@ public class SpadesPanel extends JPanel implements Runnable{
 				}
 			}
 		// *** CALCULATE SCORE *****************************************************
-			int team1CombinedBid = players.getFirst().getBid() + players.getFirst().getPartner().getBid();
-			int team2CombinedBid = players.getLast().getBid() + players.getLast().getPartner().getBid();
+//			int team1CombinedBid = players.getFirst().getBid() + players.getFirst().getPartner().getBid();
+			int team1CombinedBid = team1[0].getBid() + team1[1].getBid();
+//			int team2CombinedBid = players.getLast().getBid() + players.getLast().getPartner().getBid();
+			int team2CombinedBid = team2[0].getBid() + team2[1].getBid();
 
-			int team1CombinedTricks = players.getFirst().getTricks() + players.getFirst().getPartner().getTricks();
-			int team2CombinedTricks = players.getLast().getTricks() + players.getLast().getPartner().getTricks();
+//			int team1CombinedTricks = players.getFirst().getTricks() + players.getFirst().getPartner().getTricks();
+			int team1CombinedTricks = team1[0].getTricks() + team1[1].getTricks();
+//			int team2CombinedTricks = players.getLast().getTricks() + players.getLast().getPartner().getTricks();
+			int team2CombinedTricks = team2[0].getTricks() + team2[1].getTricks();
 
 			int team1CombinedBags = team1CombinedTricks - team1CombinedBid;
 			int team2CombinedBags = team2CombinedTricks - team2CombinedBid;
@@ -352,8 +354,8 @@ public class SpadesPanel extends JPanel implements Runnable{
 			parentFrame = (Frame) parentWindow;
 		}
 
-		final String[] columnNames = {"", players.getFirst().getName() + " and " + players.getFirst().getPartner().getName(),
-				players.getLast().getName() + " and " + players.getLast().getPartner().getName()};
+		final String[] columnNames = {"", team1[0].getName() + " and " + team1[1].getName(),
+				team2[0].getName() + " and " + team2[1].getName()};
 
 		String[][] data = {
 		{ "Combined Bid", String.valueOf(team1CombinedBid), String.valueOf(team2CombinedBid)},
@@ -386,20 +388,20 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 
 	public void loadGame() {
-		InputStream is = null;
+		BufferedReader br = null;
 		try {
-			File file2 = new File("SpadesScores.dat");
+			File file = new File("SpadesScores.dat");
 
-			is = new FileInputStream(file2);
-			is = new BufferedInputStream(is);
-
-			team1TotalBags = is.read();
+			br = new BufferedReader(new FileReader(file));
+			team1TotalBags = Integer.parseInt(br.readLine());
 			System.out.println(team1TotalBags);
-			team1TotalScore = is.read();
+			team1TotalScore = Integer.parseInt(br.readLine());
 			System.out.println(team1TotalScore);
-			team2TotalBags = is.read();
-			team2TotalScore = is.read();
-			is.close();
+			team2TotalBags = Integer.parseInt(br.readLine());
+			System.out.println(team2TotalBags);
+			team2TotalScore = Integer.parseInt(br.readLine());
+			System.out.println(team2TotalScore);
+			br.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Could not find the file. Please try again.");
 			return;
@@ -415,24 +417,17 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 
 	public void saveAndQuit() {
-		OutputStream os;
+		BufferedWriter bw = null;
 		try {
-			File file = new File("SpadesPlayers.dat");
-			File file2 = new File("SpadesScores.dat");
-			os = new FileOutputStream(file);
-			os = new BufferedOutputStream(os);
-			os = new ObjectOutputStream(os);
-			for(Player player : players) {
-				((ObjectOutputStream) os).writeObject(player);
-			}
-			os.close();
-			os = new FileOutputStream(file2);
-			os = new BufferedOutputStream(os);
-			os.write(this.team1TotalBags);
-			os.write(this.team1TotalScore);
-			os.write(this.team2TotalBags);
-			os.write(this.team2TotalScore);
-			os.close();
+			File file = new File("SpadesScores.dat");
+			bw = new BufferedWriter(new FileWriter(file));
+			bw.write(Integer.toString(this.team1TotalBags) + "\n");
+			System.out.println("Writing " + team1TotalScore);
+			bw.write(Integer.toString(this.team1TotalScore) + "\n");
+			bw.write(Integer.toString(this.team2TotalBags) + "\n");
+			System.out.println("Writing " + team2TotalScore);
+			bw.write(Integer.toString(this.team2TotalScore) + "\n");
+			bw.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Could not find the file. Not found.");
 			return;

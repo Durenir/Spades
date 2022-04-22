@@ -1,8 +1,6 @@
 package Project;
 
-import java.io.Serializable;
-
-public enum Suit implements Serializable{
+public enum Suit {
 	HEART("Hearts"), SPADE("Spades"), CLUB("Clubs"), DIAMOND("Diamond");
 	
 	private final String suit;
