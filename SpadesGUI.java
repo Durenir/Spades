@@ -42,6 +42,12 @@ public class SpadesGUI {
 				SpadesPanel.resetGame();
 			}
 		});
+		
+		loadGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				SpadesPanel.loadAndStart();
+			}
+		});
 
 		rules.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

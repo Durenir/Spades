@@ -3,11 +3,12 @@ package Project;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.io.Serializable;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Computer extends Player {
+public class Computer extends Player implements Serializable{
 
 	public Computer(String name) {
 		super(name);
@@ -43,7 +44,7 @@ public class Computer extends Player {
 		this.calcAndApplyOffsets();
 		card.setFaceUp(false);
 	}
-	
+
 	public void getBidInput(SpadesPanel sp) {
 		int bid = 0;
 		int hearts = 0;

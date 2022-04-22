@@ -4,10 +4,11 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.Serializable;
 
 import javax.imageio.ImageIO;
 
-public class Card {
+public class Card implements Serializable{
 
 	private Suit suit;
 	private Face face;

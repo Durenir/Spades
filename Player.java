@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -26,7 +27,7 @@ import javax.swing.JDialog;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
 
-public class Player {
+public class Player implements Serializable{
 	private int bid;
 	private int tricks = 0;
 	private int bags;
@@ -38,15 +39,16 @@ public class Player {
 	private String name;
 	private int[] playZone;
 	private int[] handZone;
-	private Card selectedCard;
+	private transient Card selectedCard;
 	private int handZoneWidth;
 	private int[] handZoneCardOffsetModifier;
 	private int[] handZoneOffset;
 	private int[] handZoneOffsetMarker;
-	Card playerCard;
+	transient Card playerCard;
 	private Rectangle scoreZone;
+	JDialog dialog;
 
-	private CopyOnWriteArrayList <Card> hand;
+	private transient CopyOnWriteArrayList <Card> hand;
 
 	public Player(String name) {
 		this.name = name;
@@ -78,6 +80,10 @@ public class Player {
 		for (Card card : getHand()) {
 			card.draw(g2);
 		}
+	}
+
+	public void reInitHand() {
+		hand = new CopyOnWriteArrayList <Card>();
 	}
 
 	public void addCard(Card card) {
@@ -210,7 +216,7 @@ public class Player {
 
 		// populate this Dialog box iff there is a human player...
 		// NOTE - the game will still execute if this nothing happens here...
-		final JDialog dialog = new JDialog(parentFrame, "Bid Input");
+		dialog = new JDialog(parentFrame, "Bid Input");
 		dialog.setLayout(new FlowLayout());
 
 		dialog.setSize(700, 100);
@@ -219,7 +225,7 @@ public class Player {
 		dialog.setVisible(true);
 
 		JRadioButton rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11,
-						rb12, rb13;
+						rb12, rb13, rb14;
 		JButton setBid;
 
 		rb1 = new JRadioButton("1");
@@ -262,6 +268,9 @@ public class Player {
 		rb13 = new JRadioButton("13");
 		rb13.setBounds(100,65,100,30);
 
+		rb14 = new JRadioButton("Save and Quit");
+		rb14.setBounds(100, 70, 100, 30);
+
 		final ButtonGroup bg = new ButtonGroup();
 		bg.add(rb1);
 		bg.add(rb2);
@@ -277,6 +286,7 @@ public class Player {
 		bg.add(rb12);
 		bg.add(rb12);
 		bg.add(rb13);
+		bg.add(rb14);
 		setBid = new JButton("Set Bid");
 		setBid.setBounds(10, 10, 20, 20);
 		dialog.add(rb1);
@@ -292,6 +302,7 @@ public class Player {
 		dialog.add(rb11);
 		dialog.add(rb12);
 		dialog.add(rb13);
+		dialog.add(rb14);
 		dialog.add(setBid);
 		dialog.revalidate();
 		dialog.repaint();
@@ -300,13 +311,22 @@ public class Player {
 			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
 			        AbstractButton button = buttons.nextElement();
 			        if (button.isSelected()) {
-			        	System.out.println(button.getText() + " was selected");
-			        	setBid(Integer.parseInt(button.getText()));
-			        	dialog.dispose();
+			        	if(button.getText() == "Save and Quit") {
+			        		SpadesPanel.saveGame();
+			        	} else {
+			        		System.out.println(button.getText() + " was selected");
+			        		setBid(Integer.parseInt(button.getText()));
+			        	}
+		        		dialog.dispose();
 			        }
 			    }
 			}
 		});
+		while(dialog.isVisible()) {
+			if(SpadesPanel.reset || SpadesPanel.load) {
+				dialog.dispose();
+			}
+		}
 	}
 
 	public void reset() {
@@ -564,7 +584,7 @@ public class Player {
 		this.handZoneOffset = offset;
 		this.handZoneWidth = width;
 		this.handZoneOffsetMarker[0] = this.handZoneOffset[0];
-		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];	
+		this.handZoneOffsetMarker[1] = this.handZoneOffset[1];
 		}
 
 	public void setHandZone(int[] handZone, int[] offset, int[] offsetModifier,

@@ -1,8 +1,9 @@
 package Project;
 
 import java.awt.Graphics2D;
+import java.io.Serializable;
 
-public class Human extends Player {
+public class Human extends Player implements Serializable{
 	public Human(String name) {
 		super(name);
 	}

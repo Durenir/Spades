@@ -3,20 +3,37 @@ package Project;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.swing.*;
+
+import HW6.Student;
 
 public class SpadesPanel extends JPanel implements Runnable{
 
 	Thread gameThread;
 	int FPS = 60;
-	Deque<Player> players = new LinkedList<Player>();
+	ConcurrentLinkedDeque<Player> players = new ConcurrentLinkedDeque<Player>();
 	Deck deck;
 	boolean spadesBroken;
 	public static boolean reset;
+	public static boolean save;
+	public static boolean load;
 	private int team1TotalScore;
 	private int team2TotalScore;
 	private int team1TotalBags;
@@ -139,11 +156,13 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 
 	public void initGameThread() {
+		System.out.println("Starting thread");
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
 	public void setupRound() {
+		System.out.println("Starting set up");
 		spadesBroken = false;
 		deck = new Deck();
 		deck.shuffle();
@@ -158,6 +177,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		}
 		for(Player p : players) {
 			p.reset();
+			p.getHand().clear();
 		}
 		//Deal cards
 		while(!deck.isEmpty()) {
@@ -186,6 +206,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		for(Player p : players) {
 			p.getBidInput(this);
 		}
+		System.out.println("Finished set up");
 	}
 	public void playSpades() {
 		while(!reset && this.team1TotalScore < 500 && this.team2TotalScore < 500) {
@@ -193,11 +214,11 @@ public class SpadesPanel extends JPanel implements Runnable{
 		// while score < 500, continue to play
 
 		boolean bidLock = true;
-		while(bidLock) {
+		while(bidLock && !save && !load && !reset) {
 			bidLock = bidLock();
-			if(reset) {
-				//TODO get the dialog component and close it.
-			}
+		}
+		if(save) {
+			saveAndQuit();
 		}
 		// for-loop control a round, one round has 13 plays
 		for(int i = 0; i < 13; i++) {
@@ -348,13 +369,13 @@ public class SpadesPanel extends JPanel implements Runnable{
 		scores.display();
 
 		} else {
+			System.out.println("Killing thread");
 			gameThread.stop();
 			gameThread = null;
 			this.newGame();
 		}
 		reset = false;
 		}
-		//Break ties, display results with play again button. Action listener calls newGame();
 		EndFrame eFrame = new EndFrame(this, players);
 		eFrame.display();
 		boolean newGameLock = false;
@@ -362,6 +383,64 @@ public class SpadesPanel extends JPanel implements Runnable{
 			newGameLock = reset;
 		}
 		this.newGame();
+	}
+
+	public void loadGame() {
+		InputStream is = null;
+		try {
+			File file2 = new File("SpadesScores.dat");
+
+			is = new FileInputStream(file2);
+			is = new BufferedInputStream(is);
+
+			team1TotalBags = is.read();
+			System.out.println(team1TotalBags);
+			team1TotalScore = is.read();
+			System.out.println(team1TotalScore);
+			team2TotalBags = is.read();
+			team2TotalScore = is.read();
+			is.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not find the file. Please try again.");
+			return;
+		} catch (IOException e) {
+			System.out.println("Could not read the file. Please try again.");
+			return;
+		}
+	}
+
+	public static void loadAndStart() {
+		load = true;
+		reset = true;
+	}
+
+	public void saveAndQuit() {
+		OutputStream os;
+		try {
+			File file = new File("SpadesPlayers.dat");
+			File file2 = new File("SpadesScores.dat");
+			os = new FileOutputStream(file);
+			os = new BufferedOutputStream(os);
+			os = new ObjectOutputStream(os);
+			for(Player player : players) {
+				((ObjectOutputStream) os).writeObject(player);
+			}
+			os.close();
+			os = new FileOutputStream(file2);
+			os = new BufferedOutputStream(os);
+			os.write(this.team1TotalBags);
+			os.write(this.team1TotalScore);
+			os.write(this.team2TotalBags);
+			os.write(this.team2TotalScore);
+			os.close();
+		} catch (FileNotFoundException e) {
+			System.out.println("Could not find the file. Not found.");
+			return;
+		} catch (IOException e) {
+			System.out.println("Could not write to file. Please try gain." + e);
+			return;
+		}
+		System.exit(0);
 	}
 
 	public void run() {
@@ -408,14 +487,24 @@ public class SpadesPanel extends JPanel implements Runnable{
 		reset = true;
 	}
 
+	public static void saveGame() {
+		save = true;
+	}
+
 	public void newGame(){
-		team1TotalScore = 0;
-		team2TotalScore = 0;
-		team1TotalBags = 0;
-		team2TotalBags = 0;
 		reset = false;
+		if(!load) {
+			team1TotalScore = 0;
+			team2TotalScore = 0;
+			team1TotalBags = 0;
+			team2TotalBags = 0;
+			initGame();
+		} else {
+			System.out.println("Loading game!");
+			loadGame();
+		}
+		load = false;
 		initGameThread();
-		initGame();
 		playSpades();
 	}
 }
