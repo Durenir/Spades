@@ -208,9 +208,9 @@ public class Player {
 		// populate this Dialog box iff there is a human player...
 		// NOTE - the game will still execute if this nothing happens here...
 		dialog = new JDialog(parentFrame, "Bid Input");
+		dialog.setUndecorated(true);
 		dialog.setLayout(new FlowLayout());
-
-		dialog.setSize(700, 100);
+		dialog.setSize(650, 100);
 		dialog.setResizable(false);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);

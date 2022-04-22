@@ -15,7 +15,7 @@ public class SpadesGUI {
 
 		JFrame window = new JFrame();
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setResizable(true);
+		window.setResizable(false);
 		window.setTitle("Spades");
 
 		// CREATE:  JMenuBar -> add to window frame

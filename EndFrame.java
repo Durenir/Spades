@@ -58,7 +58,7 @@ public class EndFrame extends JFrame {
 	    	this.dispose();
 	    }
 
-	    if(choice == JOptionPane.NO_OPTION){
+	    if(choice == JOptionPane.NO_OPTION || choice == JOptionPane.CLOSED_OPTION){
 	      System.exit(0);
 	    }
   }

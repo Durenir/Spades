@@ -1,19 +1,13 @@
 package Project;
 
 import java.awt.*;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 import javax.swing.*;
@@ -162,6 +156,10 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 	public void setupRound() {
 		System.out.println("Starting set up");
+		for(Player p : players) {
+			if(p.getSelectedCard() != null)
+			p.setSelectedCard(null);
+		}
 		spadesBroken = false;
 		deck = new Deck();
 		deck.shuffle();
@@ -207,7 +205,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 		System.out.println("Finished set up");
 	}
 	public void playSpades() {
-		while(!reset && this.team1TotalScore < 500 && this.team2TotalScore < 500) {
+		while(!reset && this.team1TotalScore < 30 && this.team2TotalScore < 30) {
 		setupRound();
 		// while score < 500, continue to play
 
@@ -391,7 +389,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 		BufferedReader br = null;
 		try {
 			File file = new File("SpadesScores.dat");
-
 			br = new BufferedReader(new FileReader(file));
 			team1TotalBags = Integer.parseInt(br.readLine());
 			System.out.println(team1TotalBags);
@@ -403,7 +400,11 @@ public class SpadesPanel extends JPanel implements Runnable{
 			System.out.println(team2TotalScore);
 			br.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("Could not find the file. Please try again.");
+			System.out.println("No file found");
+			team1TotalScore = 0;
+			team2TotalScore = 0;
+			team1TotalBags = 0;
+			team2TotalBags = 0;
 			return;
 		} catch (IOException e) {
 			System.out.println("Could not read the file. Please try again.");
