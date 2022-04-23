@@ -187,13 +187,11 @@ public class SpadesPanel extends JPanel implements Runnable{
 
 	// Initializes game thread
 	public void initGameThread() {
-		System.out.println("Starting thread");
 		gameThread = new Thread(this);
 		gameThread.start();
 	}
 
 	public void setupRound() {
-		System.out.println("Starting set up");
 		for(Player p : players) {
 			if(p.getSelectedCard() != null)
 				p.setSelectedCard(null);
@@ -244,7 +242,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 			p.setBid(bid);
 			bid = 0;
 		}
-		System.out.println("Finished set up");
 	}
 	public void playSpades() {
 		while(!reset && this.team1TotalScore < 500 && this.team2TotalScore < 500) {
