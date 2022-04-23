@@ -1,10 +1,15 @@
-package Project;
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: Models the Card object. Constructor takes in a Suit object, Face
+   object and String for the file name. Important methods are draw() and
+   update() which draws the card and updates the position on the panel
+   respectively.
+ */
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 
 public class Card {
@@ -25,20 +30,29 @@ public class Card {
 	private Rectangle rec;
 
 
+	/* Constructor */
 	public Card(Suit suit, Face face, String fileName) {
 		this.suit = suit;
 		this.face = face;
+
+		// sets value -- higher value for face cards
 		if(face == Face.ACE) {
 			value = 14;
 		} else {
 			value = face.ordinal() + 1;
 		}
+
+		// higher value for spades
 		if(suit == Suit.SPADE) {
 			value += 13;
 		}
+
 		position = new int[2];
 		destination = new int[2];
 		rotation = new int[2];
+
+		// try/catch block to get the correct image or throw exception if not
+		// found
 		try {
 			image = ImageIO.read(getClass().getResource("Cards/" + fileName));
 			backImage = ImageIO.read(getClass().getResource("Cards/Image52.png"));
@@ -47,6 +61,7 @@ public class Card {
 		}
 	}
 
+	// updates card image position
 	public void update() {
 		//update positions
 		if(position[0] < destination[0]) {
@@ -79,6 +94,7 @@ public class Card {
 		}
 	}
 
+	// renders the card
 	public void draw(Graphics2D g2) {
 		//Image, x position, y position, width, height,
 		if(faceUp) {
@@ -88,6 +104,7 @@ public class Card {
 		}
 	}
 
+	/* Setter and Getters */
 	public Suit getSuit() {
 		return suit;
 	}

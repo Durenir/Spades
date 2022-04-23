@@ -1,5 +1,8 @@
-package Project;
-
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: enum class to model the "face" of each card, used for the Card
+   object.
+ */
 
 public enum Face {
 	ACE("Ace"), TWO("Two"), THREE("Three"), FOUR("Four"),

@@ -1,9 +1,16 @@
-package Project;
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: Extends the Player class. Note: Unused but included to
+   allow for flexibility with maintenance and future improvements.
+   object.
+ */
 
 import java.awt.Graphics2D;
 import java.io.Serializable;
 
 public class Human extends Player implements Serializable{
+
+	/* Constructor */
 	public Human(String name) {
 		super(name);
 	}

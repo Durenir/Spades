@@ -1,25 +1,26 @@
-package Project;
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: Creates a JFrame to display the rules of the game. Includes a scroll
+   feature.
+ */
 
 import javax.swing.*;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.Document;
-import javax.swing.text.SimpleAttributeSet;
-import javax.swing.text.StyleConstants;
 import java.awt.*;
-import java.util.Arrays;
 
 public class RulesFrame extends JFrame{
 
-  // Constructor
+  /* Constructor */
   public RulesFrame(){
 
+    // sets the attributes of the frame
     JTextPane rules = new JTextPane();
     Color c = new Color(245, 245, 245);
     rules.setBackground(c);
 
+    // creates the option to scroll the pane
     JScrollPane ruleScroll = new JScrollPane(rules);
 
-    // options
+    // sets the textual information
     rules.setContentType("text/html");
     rules.setText("<h1>The Pack</h1>\n" +
             "<p>The standard 52-card pack is used.</p>\n" +
@@ -73,6 +74,5 @@ public class RulesFrame extends JFrame{
     setVisible(true);
     setTitle("Rules");
   }
-
 
 }

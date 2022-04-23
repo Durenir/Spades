@@ -1,12 +1,16 @@
-package Project;
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: Creates a JFrame to display the score at the end of each round.
+   Includes a scroll feature and utilizes a JTable to neatly layout pertinent
+   information.
+ */
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class ScoreFrame extends JFrame {
 
+  /* Constructor */
   public ScoreFrame(String[] cn, String[][] d){
 
     JTable k = new JTable(d, cn) {
@@ -17,13 +21,6 @@ public class ScoreFrame extends JFrame {
     };
     JScrollPane sp = new JScrollPane(k);
     add(sp);
-
-//    JButton playAgain = new JButton("Play next round");
-//    playAgain.setBounds(100, 100, 100, 100);
-//    add(playAgain);
-
-
-
   }
 
   public void display(){

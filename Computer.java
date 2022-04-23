@@ -1,4 +1,10 @@
-package Project;
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: Inherits from Player and models a Computer player.
+   Important methods getBidInput() which automatically calculates a bid for the
+   Computer object prior to a new round. playCard() contains the logic for the
+   Computer player to automatically play a card based on their hand.
+ */
 
 import java.awt.Color;
 import java.awt.Font;
@@ -8,6 +14,7 @@ import java.util.ArrayList;
 
 public class Computer extends Player {
 
+	/* Constructor */
 	public Computer(String name) {
 		super(name);
 	}
@@ -21,6 +28,8 @@ public class Computer extends Player {
 		}
 	}
 
+	// renders the Name, Bid and Trick of player next to their position on the
+	// display.
 	public void draw(Graphics2D g2) {
 		g2.setFont(new Font("Sego UI semibold", Font.PLAIN, 12));
 		g2.setColor(Color.WHITE);
@@ -37,12 +46,13 @@ public class Computer extends Player {
 
 	public void addCard(Card card) {
 		card.setOwner(this);
-//		card.setDestination(getHandZoneX(), getHandZoneY());
 		getHand().add(card);
 		this.calcAndApplyOffsets();
 		card.setFaceUp(false);
 	}
 
+	// Automatically calcualte the bid for the Computer object based on their
+	// hand
 	public void getBidInput(SpadesPanel sp) {
 		int bid = 0;
 		int hearts = 0;
@@ -51,14 +61,14 @@ public class Computer extends Player {
 		int clubs = 0;
 		for(Card card : getHand()) {
 			switch(card.getValue()) {
-			case 11:
-			case 12:
-			case 13:
-			case 14:
-				bid++;
-				break;
-			default:
-				break;
+				case 11:
+				case 12:
+				case 13:
+				case 14:
+					bid++;
+					break;
+				default:
+					break;
 			}
 			if(card.getSuit().equals(Suit.CLUB)) {
 				clubs++;
@@ -85,16 +95,16 @@ public class Computer extends Player {
 		if(diamonds <= 2) {
 			bid++;
 		}
-		this.setBid(bid);
+		SpadesPanel.bid = bid;
 	}
 
+	// Logic for the Computer object to play a card
 	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {
 		// Take in the top card that's been played and the leading suit.
 		Card playedCard = null;
 		ArrayList<Card> options = new ArrayList<Card>();
 		//Are we the first player in the round and spades aren't broken?
 		if (card == null && suit == null && !spadesBroken) {
-			System.out.println("First to play and spades not broken.");
 			//Get all the non spades
 			for (Card currentCard : getHand()) {
 				if (currentCard.getSuit() != Suit.SPADE) {
@@ -103,7 +113,6 @@ public class Computer extends Player {
 			}
 			//Do we have any nonspades? If yes get the highest
 			if (!options.isEmpty()) {
-				System.out.println("Playing nonspade.");
 				playedCard = options.get(0);
 				for (Card currentCard : options) {
 					if (currentCard.getValue() > playedCard.getValue()) {
@@ -112,7 +121,6 @@ public class Computer extends Player {
 				}
 			} else {
 				//If no nonspades, get the highest spade
-				System.out.println("Playing a spade");
 				playedCard = getHand().get(0);
 				for (Card currentCard : getHand()) {
 					if (currentCard.getValue() > playedCard.getValue()) {
@@ -120,11 +128,10 @@ public class Computer extends Player {
 					}
 				}
 			}
-		// Are we the first player and spades are broken?
+			// Are we the first player and spades are broken?
 		} else if(card == null && suit == null && spadesBroken) {
-			System.out.println("First to play and spades broken.");
 			suit = getHand().get(new SecureRandom().nextInt(getHand().size())).getSuit();
-			System.out.println("Selecting random suit: " + suit.toString());
+
 			for (Card currentCard : getHand()) {
 				if (currentCard.getSuit() == suit) {
 					options.add(currentCard);
@@ -146,10 +153,8 @@ public class Computer extends Player {
 			}
 			// If highestCard is partners
 			if (card.getOwner() == getPartner()) {
-				System.out.println("Highest owned by my Partner");
 				if (!options.isEmpty()) {
 					// play lowest
-					System.out.println("Playing lowest in suit.");
 					playedCard = options.get(0);
 					for (Card currentCard : options) {
 						if (currentCard.getValue() < playedCard.getValue()) {
@@ -166,8 +171,9 @@ public class Computer extends Player {
 					}
 					// If there are any, get the lowest
 					if (!options.isEmpty()) {
-						System.out.println("Playing lowest off suit.");
+
 						playedCard = options.get(0);
+
 						for (Card currentCard : options) {
 							if (currentCard.getValue() < playedCard.getValue()) {
 								playedCard = currentCard;
@@ -175,7 +181,6 @@ public class Computer extends Player {
 						}
 					} else {
 						// Otherwise, we need to get the lowest spade
-						System.out.println("Playing lowest off suit spade.");
 						for (Card currentCard : getHand()) {
 							if (currentCard.getSuit() == Suit.SPADE) {
 								options.add(currentCard);
@@ -190,10 +195,8 @@ public class Computer extends Player {
 					}
 				}
 			} else {
-				System.out.println("Highest not owned by my partner");
 				if (!options.isEmpty()) {
 					// play highest if possible, else play lowest
-					System.out.println("Playing on suit.");
 					Card highest = options.get(0);
 					Card lowest = options.get(0);
 					for (Card currentCard : options) {
@@ -205,15 +208,12 @@ public class Computer extends Player {
 						}
 					}
 					if (highest.getValue() > card.getValue()) {
-						System.out.println("Playing highest.");
 						playedCard = highest;
 					} else {
-						System.out.println("Playing lowest.");
 						playedCard = lowest;
 					}
 				} else {
 					// get spades
-					System.out.println("Playing spade off suit.");
 					for (Card currentCard : getHand()) {
 						if (currentCard.getSuit() == Suit.SPADE) {
 							options.add(currentCard);
@@ -221,7 +221,6 @@ public class Computer extends Player {
 					}
 					// if has spades
 					if (!options.isEmpty()) {
-						System.out.println("We have spades.");
 						Card highest = options.get(0);
 						Card lowest = options.get(0);
 						for (Card currentCard : options) {
@@ -236,12 +235,10 @@ public class Computer extends Player {
 						if(card.getSuit() == Suit.SPADE && (highest.getValue() > card.getValue())) {
 							playedCard = highest;
 						} else {
-						//otherwise throw our lowest to win so we don't waste our high cards.
+							//otherwise throw our lowest to win so we don't waste our high cards.
 							playedCard = lowest;
 						}
 					} else {
-						System.out
-								.println("No spades to play. Playing offsuit.");
 						// else play lowest off suit
 						for (Card currentCard : getHand()) {
 							if (currentCard.getSuit() != Suit.SPADE) {

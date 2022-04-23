@@ -1,4 +1,10 @@
-package Project;
+/* TEAM: William Miller and Mike Stevens
+   DATE: 4/22/2022
+   ABOUT: Here it is, the all mighty main method! Runs the game. Creates a
+   JFrame to render the game to the display, creates and displays the menu and
+   their associated menu items as well as associated action listeners to respond
+   to user interation.
+ */
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -8,8 +14,6 @@ import java.awt.event.KeyEvent;
 public class SpadesGUI {
 
 	final static SpadesPanel spadesPanel = new SpadesPanel();
-
-
 
 	public static void main(String[] args) {
 
@@ -69,19 +73,18 @@ public class SpadesGUI {
 		});
 		// *** QUIT MENU  END  ****************************************************/
 
-
 		// Add MENUS to MENU BAR
 		menuBar.add(file);
 		menuBar.add(quit);
 		window.setJMenuBar(menuBar);
 
+		// Add the spades panel the JFrame
 		window.add(spadesPanel);
 		window.pack();
 		window.setLocationRelativeTo(null);
 		window.setVisible(true);
 
 		spadesPanel.newGame();
-
 
 	}
 }
