@@ -214,6 +214,7 @@ public class Player {
 		dialog.setResizable(false);
 		dialog.setLocationRelativeTo(null);
 		dialog.setVisible(true);
+		System.out.println("is visable!!!!!!!!!!!!");
 
 		JRadioButton rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11,
 						rb12, rb13, rb14;
@@ -280,6 +281,24 @@ public class Player {
 		bg.add(rb14);
 		setBid = new JButton("Set Bid");
 		setBid.setBounds(10, 10, 20, 20);
+		setBid.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
+			        AbstractButton button = buttons.nextElement();
+			        if (button.isSelected()) {
+			        	if(button.getText() == "Save and Quit") {
+			        		SpadesPanel.bid = 1;
+			        		SpadesPanel.saveGame();
+			        	} else {
+			        		System.out.println(button.getText() + " was selected");
+			        		SpadesPanel.bid = Integer.parseInt(button.getText());
+//			        		setBid(Integer.parseInt(button.getText()));
+			        	}
+		        		dialog.dispose();
+			        }
+			    }
+			}
+		});
 		dialog.add(rb1);
 		dialog.add(rb2);
 		dialog.add(rb3);
@@ -297,27 +316,21 @@ public class Player {
 		dialog.add(setBid);
 		dialog.revalidate();
 		dialog.repaint();
-		setBid.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			    for (Enumeration<AbstractButton> buttons = bg.getElements(); buttons.hasMoreElements();) {
-			        AbstractButton button = buttons.nextElement();
-			        if (button.isSelected()) {
-			        	if(button.getText() == "Save and Quit") {
-			        		SpadesPanel.saveGame();
-			        	} else {
-			        		System.out.println(button.getText() + " was selected");
-			        		setBid(Integer.parseInt(button.getText()));
-			        	}
-		        		dialog.dispose();
-			        }
-			    }
-			}
-		});
+		System.out.println("Repainting");
 		while(dialog.isVisible()) {
+			System.out.println("Still visable");
 			if(SpadesPanel.reset || SpadesPanel.load) {
 				dialog.dispose();
+				SpadesPanel.bid = 1; //TODO test
 			}
 		}
+		boolean lock = false;
+		while(!lock) {
+			if(SpadesPanel.bid != 0 || SpadesPanel.save) {
+				lock = true;
+			}
+		}
+		System.out.println("Moving from player bid to spades panel.");
 	}
 
 	public void reset() {

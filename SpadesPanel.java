@@ -1,6 +1,7 @@
 package Project;
 
 import java.awt.*;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -22,6 +23,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 	public static boolean reset;
 	public static boolean save;
 	public static boolean load;
+	public static int bid;
 	private int team1TotalScore;
 	private int team2TotalScore;
 	private int team1TotalBags;
@@ -201,18 +203,26 @@ public class SpadesPanel extends JPanel implements Runnable{
 		}
 		for(Player p : players) {
 			p.getBidInput(this);
+			while(bid == 0) {
+				System.out.println("Getting " + p.getName() + "'s bid.");
+			}
+			p.setBid(bid);
+			bid = 0;
 		}
 		System.out.println("Finished set up");
 	}
 	public void playSpades() {
-		while(!reset && this.team1TotalScore < 30 && this.team2TotalScore < 30) {
+		while(!reset && this.team1TotalScore < 500 && this.team2TotalScore < 500) {
 		setupRound();
 		// while score < 500, continue to play
 
 		boolean bidLock = true;
+		System.out.println("Before bid lock");
 		while(bidLock && !save && !load && !reset) {
+			System.out.println("In bid lock");
 			bidLock = bidLock();
 		}
+		System.out.println("Out of bid lock.");
 		if(save) {
 			saveAndQuit();
 		}
@@ -436,6 +446,8 @@ public class SpadesPanel extends JPanel implements Runnable{
 			System.out.println("Could not write to file. Please try gain." + e);
 			return;
 		}
+		Window frame = SwingUtilities.getWindowAncestor(this);
+		frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING));
 		System.exit(0);
 	}
 
@@ -488,6 +500,10 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 
 	public void newGame(){
+		if(gameThread != null) {
+			gameThread.stop();
+			gameThread = null;
+		}
 		reset = false;
 		if(!load) {
 			team1TotalScore = 0;

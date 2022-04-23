@@ -44,6 +44,7 @@ public class Computer extends Player {
 	}
 
 	public void getBidInput(SpadesPanel sp) {
+		System.out.println("Setting computer bids.");
 		int bid = 0;
 		int hearts = 0;
 		int spades = 0;
@@ -85,7 +86,7 @@ public class Computer extends Player {
 		if(diamonds <= 2) {
 			bid++;
 		}
-		this.setBid(bid);
+		SpadesPanel.bid = bid;
 	}
 
 	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {
