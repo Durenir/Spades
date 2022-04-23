@@ -140,7 +140,6 @@ public class Player {
           Card card = itr.next();
           if (card.getRec().contains(e.getPoint())) {
             playerCard = card;
-            System.out.println(playerCard.toString());
           }
         }
       }
@@ -359,10 +358,10 @@ public class Player {
   // sorts a dealt hand -- makes the visual presentation of a hand more user
   // intuitve
   public void sortHand() {
-    ArrayList<Card> hearts = new ArrayList<Card>();
-    ArrayList<Card> spades = new ArrayList<Card>();
-    ArrayList<Card> diamonds = new ArrayList<Card>();
-    ArrayList<Card> clubs = new ArrayList<Card>();
+    ArrayList<Card> hearts = new ArrayList<>();
+    ArrayList<Card> spades = new ArrayList<>();
+    ArrayList<Card> diamonds = new ArrayList<>();
+    ArrayList<Card> clubs = new ArrayList<>();
 
     for (Card card : hand) {
       if (card.getSuit() == Suit.HEART) {

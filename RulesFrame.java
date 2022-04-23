@@ -31,10 +31,8 @@ public class RulesFrame extends JFrame{
             "<h1>The Deal</h1>\n" +
             "<p>To win at least the number of tricks bid.</p>\n" +
             "<h1>The Bidding</h1>\n" +
-            "<p>The first dealer is chosen by a draw for high card, and thereafter the turn\n" +
-            "    to deal proceeds clockwise. The entire deck is dealt one at a time, face\n" +
-            "    down, beginning on the dealer's left. The players then pick up their cards\n" +
-            "    and arrange them by suits.</p>\n" +
+            "<p>The user is always selected as the dealer. That is, " +
+            "they are the first to move.</p>\n" +
             "<h1>The Play</h1>\n" +
             "<p>Each player decides how many tricks they will be able to take. The player to\n" +
             "    the dealer's left starts the bidding and, in turn, each player states how\n" +
@@ -52,8 +50,9 @@ public class RulesFrame extends JFrame{
             "    100 points is made every time a player accumulates 10 bags. Thus, the object\n" +
             "    is always to fulfill the bid exactly.\n" +
             "    If the player \"breaks contract,\" that is, if they take fewer than the number\n" +
-            "    of tricks bid, the score is 0. For example, if a player bids Four and wins\n" +
-            "    only three tricks, no points are awarded.\n" +
+            "    of tricks bid, the score is -10 times the number of the bid." +
+            " For example, if a player bids Four and wins\n" +
+            "    only three tricks, the score is -40.\n" +
             "    One of the players is the scorer and writes the bids down, so that during\n" +
             "    the play and for the scoring afterward, this information will be available\n" +
             "    to all the players. When a hand is over, the scores should be recorded next\n" +
@@ -63,7 +62,6 @@ public class RulesFrame extends JFrame{
             "</p>");
     rules.setEditable(false);
     add(ruleScroll);
-
 
   }
 

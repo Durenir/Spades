@@ -293,7 +293,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 					}
 					for(Player p : players) {
 						p.setSelectedCard(null);
-						System.out.println(p.getName());
 					}
 					try {
 						Thread.sleep(1000);
