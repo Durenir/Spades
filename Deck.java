@@ -11,7 +11,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class Deck {
 
 	// CopyOnWriteArrayList provides thread safety
-	private CopyOnWriteArrayList<Card> deck = new CopyOnWriteArrayList <Card>();
+	private CopyOnWriteArrayList<Card> deck = new CopyOnWriteArrayList<>();
 	private static final int NUM_CARDS_OF_SUIT = 13;
 
 	/* Constructor */

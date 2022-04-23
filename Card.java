@@ -10,6 +10,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.Objects;
 import javax.imageio.ImageIO;
 
 public class Card {
@@ -54,8 +55,8 @@ public class Card {
 		// try/catch block to get the correct image or throw exception if not
 		// found
 		try {
-			image = ImageIO.read(getClass().getResource("Cards/" + fileName));
-			backImage = ImageIO.read(getClass().getResource("Cards/Image52.png"));
+			image = ImageIO.read(Objects.requireNonNull(getClass().getResource("Cards/" + fileName)));
+			backImage = ImageIO.read(Objects.requireNonNull(getClass().getResource("Cards/Image52.png")));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

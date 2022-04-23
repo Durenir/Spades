@@ -33,9 +33,9 @@ public class Computer extends Player {
 	public void draw(Graphics2D g2) {
 		g2.setFont(new Font("Sego UI semibold", Font.PLAIN, 12));
 		g2.setColor(Color.WHITE);
-		g2.drawString(String.valueOf("Name: " + this.getName()), getScoreZone().x, getScoreZone().y + 12);
-		g2.drawString(String.valueOf("Bid: " + this.getBid()), getScoreZone().x, getScoreZone().y + 12 * 2);
-		g2.drawString(String.valueOf("Tricks: " + this.getTricks()), getScoreZone().x, getScoreZone().y + (12 * 3));
+		g2.drawString("Name: " + this.getName(), getScoreZone().x, getScoreZone().y + 12);
+		g2.drawString("Bid: " + this.getBid(), getScoreZone().x, getScoreZone().y + 12 * 2);
+		g2.drawString("Tricks: " + this.getTricks(), getScoreZone().x, getScoreZone().y + (12 * 3));
 		if(getSelectedCard() != null) {
 			getSelectedCard().draw(g2);
 		}
@@ -60,15 +60,10 @@ public class Computer extends Player {
 		int diamonds = 0;
 		int clubs = 0;
 		for(Card card : getHand()) {
-			switch(card.getValue()) {
-				case 11:
-				case 12:
-				case 13:
-				case 14:
-					bid++;
-					break;
-				default:
-					break;
+			switch(card.getValue()){
+				case 11, 12, 13, 14 -> bid++;
+				default -> {
+				}
 			}
 			if(card.getSuit().equals(Suit.CLUB)) {
 				clubs++;
@@ -102,7 +97,7 @@ public class Computer extends Player {
 	public Card playCard(Card card, Suit suit, boolean spadesBroken, SpadesPanel sp) {
 		// Take in the top card that's been played and the leading suit.
 		Card playedCard = null;
-		ArrayList<Card> options = new ArrayList<Card>();
+		ArrayList<Card> options = new ArrayList<>();
 		//Are we the first player in the round and spades aren't broken?
 		if (card == null && suit == null && !spadesBroken) {
 			//Get all the non spades
@@ -129,7 +124,7 @@ public class Computer extends Player {
 				}
 			}
 			// Are we the first player and spades are broken?
-		} else if(card == null && suit == null && spadesBroken) {
+		} else if(card == null && suit == null) {
 			suit = getHand().get(new SecureRandom().nextInt(getHand().size())).getSuit();
 
 			for (Card currentCard : getHand()) {
@@ -152,6 +147,7 @@ public class Computer extends Player {
 				}
 			}
 			// If highestCard is partners
+			assert card != null;
 			if (card.getOwner() == getPartner()) {
 				if (!options.isEmpty()) {
 					// play lowest

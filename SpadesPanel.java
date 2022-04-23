@@ -234,7 +234,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 		//Sort hands
 		for(Player p : players) {
 			p.sortHand();
-			System.out.println(p.getHand());
 			p.calcAndApplyOffsets();
 		}
 		for(Player p : players) {
@@ -253,12 +252,9 @@ public class SpadesPanel extends JPanel implements Runnable{
 			// while score < 500, continue to play
 
 			boolean bidLock = true;
-			System.out.println("Before bid lock");
 			while(bidLock && !save && !load && !reset) {
-				System.out.println("In bid lock");
 				bidLock = bidLock();
 			}
-			System.out.println("Out of bid lock.");
 			if(save) {
 				saveAndQuit();
 			}
@@ -273,7 +269,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 					if(playedCard.getSuit() == Suit.SPADE && !spadesBroken) {
 						spadesBroken = true;
 					}
-					System.out.println(p.getName() + " played " + playedCard);
 					if(highest == null || ((playedCard.getValue() > highest.getValue()) &&
 									(playedCard.getSuit() == suit || playedCard.getSuit() == Suit.SPADE))) {
 						highest = playedCard;
@@ -289,8 +284,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 				}
 				if(!reset) {
 
-					System.out.println("Winner is: " + highest.getOwner().getName());
-
+					assert highest != null;
 					highest.getOwner().incrementTricks();
 
 					while(players.getFirst() != highest.getOwner()) {
@@ -419,7 +413,6 @@ public class SpadesPanel extends JPanel implements Runnable{
 				scores.display();
 
 			} else {
-				System.out.println("Killing thread");
 				gameThread.stop();
 				gameThread = null;
 				this.newGame();
@@ -498,7 +491,7 @@ public class SpadesPanel extends JPanel implements Runnable{
 	}
 
 	public void run() {
-		double drawTime = 1000000000/FPS;
+		double drawTime = 1000000000.0/FPS;
 		double delta = 0;
 		long lastTime = System.nanoTime();
 		long currentTime;

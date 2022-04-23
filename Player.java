@@ -89,9 +89,9 @@ public class Player {
   public void draw(Graphics2D g2) {
     g2.setFont(new Font("Sego UI semibold", Font.PLAIN, 12));
     g2.setColor(Color.WHITE);
-    g2.drawString(String.valueOf("Name: " + this.getName()), getScoreZone().x, getScoreZone().y + 12);
-    g2.drawString(String.valueOf("Bid: " + this.getBid()), getScoreZone().x, getScoreZone().y + 12 * 2);
-    g2.drawString(String.valueOf("Tricks: " + this.getTricks()), getScoreZone().x, getScoreZone().y + (12 * 3));
+    g2.drawString("Name: " + this.getName(), getScoreZone().x, getScoreZone().y + 12);
+    g2.drawString("Bid: " + this.getBid(), getScoreZone().x, getScoreZone().y + 12 * 2);
+    g2.drawString("Tricks: " + this.getTricks(), getScoreZone().x, getScoreZone().y + (12 * 3));
     if (selectedCard != null) {
       selectedCard.draw(g2);
     }
@@ -139,7 +139,6 @@ public class Player {
         while(itr.hasNext()) {
           Card card = itr.next();
           if (card.getRec().contains(e.getPoint())) {
-            System.out.println(card + " was clicked");
             playerCard = card;
             System.out.println(playerCard.toString());
           }
@@ -148,10 +147,8 @@ public class Player {
     });
     while (true) {
       if (playerCard != null) {
-        System.out.println("Picked a card");
         if (playerCard.getSuit() == Suit.SPADE) {
           if (card == null && suit == null && !spadesBroken) {
-            System.out.println("Spades have not been broken yet.");
             valid = false;
             continue;
           } else {
@@ -159,9 +156,6 @@ public class Player {
               // Played a spade while still having the suit.
               if (currentCard.getSuit() == suit
                       && !suit.equals(Suit.SPADE)) {
-                System.out.println("You can not play a "
-                        + playerCard.getSuit()
-                        + " while you have " + suit);
                 valid = false;
                 continue;
               }
@@ -172,9 +166,6 @@ public class Player {
             // Played a spade while still having the suit.
             if (currentCard.getSuit() == suit
                     && playerCard.getSuit() != suit) {
-              System.out.println("You can not play a "
-                      + playerCard.getSuit() + " while you have "
-                      + suit);
               valid = false;
               continue;
             }
@@ -217,8 +208,6 @@ public class Player {
   // sets a bid for the player AND offers an option to save and quit the game
   // if so desired. Uses a
   public void getBidInput(SpadesPanel sp) {
-    // Enter bid -- only do this for a human player
-    System.out.println("Enter bid...");
 
 		/*https://stackoverflow.com/questions/10522121/instantiate-jdialog-from
 		-jpanel*/
@@ -238,7 +227,6 @@ public class Player {
     dialog.setResizable(false);
     dialog.setLocationRelativeTo(null);
     dialog.setVisible(true);
-    System.out.println("is visable!!!!!!!!!!!!");
 
     JRadioButton rb1, rb2, rb3, rb4, rb5, rb6, rb7, rb8, rb9, rb10, rb11,
             rb12, rb13, rb14;
@@ -316,7 +304,6 @@ public class Player {
               SpadesPanel.bid = 1;
               SpadesPanel.saveGame();
             } else {
-              System.out.println(button.getText() + " was selected");
               SpadesPanel.bid = Integer.parseInt(button.getText());
             }
             dialog.dispose();
@@ -342,21 +329,22 @@ public class Player {
     dialog.add(setBid);
     dialog.revalidate();
     dialog.repaint();
-    System.out.println("Repainting");
+
     while(dialog.isVisible()) {
-      System.out.println("Still visable");
       if(SpadesPanel.reset || SpadesPanel.load) {
         dialog.dispose();
         SpadesPanel.bid = 1; //TODO test
+      } else {
+        Thread.yield();
       }
     }
+
     boolean lock = false;
     while(!lock) {
       if(SpadesPanel.bid != 0 || SpadesPanel.save) {
         lock = true;
       }
     }
-    System.out.println("Moving from player bid to spades panel.");
   }
 
   // method to reset a game -- re-inits scores and re-calculates hand zones
@@ -364,14 +352,8 @@ public class Player {
     bid = 0;
     tricks = 0;
     bags = 0;
-    System.out.println("Handzone is " + this.handZone[0] + ", " + this.handZone[1]);
-    System.out.println("Handzone offset is " + this.handZoneOffset[0] + ", " + this.handZoneOffset[1]);
-    System.out.println("HandzoneOffsetModifier is " + this.handZoneCardOffsetModifier[0] + ", " + this.handZoneCardOffsetModifier[1]);
     this.handZoneOffset[0] = this.handZoneOffsetMarker[0];
     this.handZoneOffset[1] = this.handZoneOffsetMarker[1];
-    System.out.println("Handzone offset is " + this.handZoneOffset[0] + ", " + this.handZoneOffset[1]);
-    System.out.println("Handzone is " + this.handZone[0] + ", " + this.handZone[1]);
-    System.out.println("HandzoneOffsetModifier is " + this.handZoneCardOffsetModifier[0] + ", " + this.handZoneCardOffsetModifier[1]);
   }
 
   // sorts a dealt hand -- makes the visual presentation of a hand more user
@@ -440,8 +422,6 @@ public class Player {
   }
 
   public void resetAndRecalcOffset() {
-    System.out.println("---------" + handZoneOffset[0] + " "
-            + handZoneOffset[1] + "----------------");
     if (handZoneOffset[0] > 0) {
       handZoneOffset[0] += Card.getWidth() / hand.size();
     } else if (handZoneOffset[0] < 0) {
